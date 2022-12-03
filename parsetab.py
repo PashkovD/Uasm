@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftDOTleftMINUSPLUSCOMMA DOT DOTS ID INTEGER LBREACKET MINUS NEWLINE OPCODE PLUS RBREACKET REG STRINGcode : code instruction\n                | code pointer\n                | code NEWLINE\n                | pointer\n                | instruction\n                | NEWLINEpointer : DOT ID NEWLINEexpression : IDexpression : INTEGERexpression : MINUS INTEGERexpression : expression PLUS expression\n                      | expression MINUS expressioninstruction : OPCODE operands NEWLINE\n                       | OPCODE NEWLINEoperand : REG\n                   | STRING\n                   | expression\n                   | LBREACKET REG RBREACKET\n                   | LBREACKET REG DOTS expression RBREACKET\n                   | LBREACKET expression DOTS REG RBREACKEToperands   : operands COMMA operand\n                      | operand'
+_lr_signature = 'leftDOTleftMINUSPLUSCOMMA DOT DOTS ID INTEGER InstImm LBREACKET MINUS NEWLINE OPCODE PLUS RBREACKET REG STRINGcode : code instruction\n                | code pointer\n                | code NEWLINE\n                | pointer\n                | instruction\n                | NEWLINEpointer : DOT ID NEWLINEexpression : IDexpression : INTEGERexpression : MINUS INTEGERexpression : expression PLUS expression\n                      | expression MINUS expressioninstruction : OPCODE operands NEWLINE\n                       | OPCODE NEWLINEinstruction : InstImm expression NEWLINEoperand : REG\n                   | STRING\n                   | expression\n                   | LBREACKET REG RBREACKET\n                   | LBREACKET REG DOTS expression RBREACKET\n                   | LBREACKET expression DOTS REG RBREACKEToperands   : operands COMMA operand\n                      | operand'
     
-_lr_action_items = {'NEWLINE':([0,1,2,3,4,6,7,8,9,10,11,12,13,14,15,16,18,19,21,22,28,29,30,31,32,37,38,],[4,9,-5,-4,-6,12,-1,-2,-3,21,22,-14,-22,-15,-16,-17,-8,-9,-7,-13,-10,-21,-11,-12,-18,-19,-20,]),'DOT':([0,1,2,3,4,7,8,9,12,21,22,],[5,5,-5,-4,-6,-1,-2,-3,-14,-7,-13,]),'OPCODE':([0,1,2,3,4,7,8,9,12,21,22,],[6,6,-5,-4,-6,-1,-2,-3,-14,-7,-13,]),'$end':([1,2,3,4,7,8,9,12,21,22,],[0,-5,-4,-6,-1,-2,-3,-14,-7,-13,]),'ID':([5,6,17,23,24,25,33,],[10,18,18,18,18,18,18,]),'REG':([6,17,23,34,],[14,26,14,36,]),'STRING':([6,23,],[15,15,]),'LBREACKET':([6,23,],[17,17,]),'INTEGER':([6,17,20,23,24,25,33,],[19,19,28,19,19,19,19,]),'MINUS':([6,16,17,18,19,23,24,25,27,28,30,31,33,35,],[20,25,20,-8,-9,20,20,20,25,-10,-11,-12,20,25,]),'COMMA':([11,13,14,15,16,18,19,28,29,30,31,32,37,38,],[23,-22,-15,-16,-17,-8,-9,-10,-21,-11,-12,-18,-19,-20,]),'PLUS':([16,18,19,27,28,30,31,35,],[24,-8,-9,24,-10,-11,-12,24,]),'DOTS':([18,19,26,27,28,30,31,],[-8,-9,33,34,-10,-11,-12,]),'RBREACKET':([18,19,26,28,30,31,35,36,],[-8,-9,32,-10,-11,-12,37,38,]),}
+_lr_action_items = {'NEWLINE':([0,1,2,3,4,6,8,9,10,11,12,13,14,15,16,17,19,20,22,23,24,30,31,32,33,34,35,40,41,],[4,10,-5,-4,-6,13,-1,-2,-3,23,24,-14,-23,-16,-17,-18,-8,-9,31,-7,-13,-10,-15,-22,-11,-12,-19,-20,-21,]),'DOT':([0,1,2,3,4,8,9,10,13,23,24,31,],[5,5,-5,-4,-6,-1,-2,-3,-14,-7,-13,-15,]),'OPCODE':([0,1,2,3,4,8,9,10,13,23,24,31,],[6,6,-5,-4,-6,-1,-2,-3,-14,-7,-13,-15,]),'InstImm':([0,1,2,3,4,8,9,10,13,23,24,31,],[7,7,-5,-4,-6,-1,-2,-3,-14,-7,-13,-15,]),'$end':([1,2,3,4,8,9,10,13,23,24,31,],[0,-5,-4,-6,-1,-2,-3,-14,-7,-13,-15,]),'ID':([5,6,7,18,25,26,27,36,],[11,19,19,19,19,19,19,19,]),'REG':([6,18,25,37,],[15,28,15,39,]),'STRING':([6,25,],[16,16,]),'LBREACKET':([6,25,],[18,18,]),'INTEGER':([6,7,18,21,25,26,27,36,],[20,20,20,30,20,20,20,20,]),'MINUS':([6,7,17,18,19,20,22,25,26,27,29,30,33,34,36,38,],[21,21,27,21,-8,-9,27,21,21,21,27,-10,-11,-12,21,27,]),'COMMA':([12,14,15,16,17,19,20,30,32,33,34,35,40,41,],[25,-23,-16,-17,-18,-8,-9,-10,-22,-11,-12,-19,-20,-21,]),'PLUS':([17,19,20,22,29,30,33,34,38,],[26,-8,-9,26,26,-10,-11,-12,26,]),'DOTS':([19,20,28,29,30,33,34,],[-8,-9,36,37,-10,-11,-12,]),'RBREACKET':([19,20,28,30,33,34,38,39,],[-8,-9,35,-10,-11,-12,40,41,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'code':([0,],[1,]),'instruction':([0,1,],[2,7,]),'pointer':([0,1,],[3,8,]),'operands':([6,],[11,]),'operand':([6,23,],[13,29,]),'expression':([6,17,23,24,25,33,],[16,27,16,30,31,35,]),}
+_lr_goto_items = {'code':([0,],[1,]),'instruction':([0,1,],[2,8,]),'pointer':([0,1,],[3,9,]),'operands':([6,],[12,]),'operand':([6,25,],[14,32,]),'expression':([6,7,18,25,26,27,36,],[17,22,29,17,33,34,38,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -41,12 +41,13 @@ _lr_productions = [
   ('expression -> expression MINUS expression','expression',3,'p_expression_bin','parser.py',98),
   ('instruction -> OPCODE operands NEWLINE','instruction',3,'p_instruction','parser.py',108),
   ('instruction -> OPCODE NEWLINE','instruction',2,'p_instruction','parser.py',109),
-  ('operand -> REG','operand',1,'p_operand','parser.py',119),
-  ('operand -> STRING','operand',1,'p_operand','parser.py',120),
-  ('operand -> expression','operand',1,'p_operand','parser.py',121),
-  ('operand -> LBREACKET REG RBREACKET','operand',3,'p_operand','parser.py',122),
-  ('operand -> LBREACKET REG DOTS expression RBREACKET','operand',5,'p_operand','parser.py',123),
-  ('operand -> LBREACKET expression DOTS REG RBREACKET','operand',5,'p_operand','parser.py',124),
-  ('operands -> operands COMMA operand','operands',3,'p_operands','parser.py',147),
-  ('operands -> operand','operands',1,'p_operands','parser.py',148),
+  ('instruction -> InstImm expression NEWLINE','instruction',3,'p_instruction_imm','parser.py',119),
+  ('operand -> REG','operand',1,'p_operand','parser.py',124),
+  ('operand -> STRING','operand',1,'p_operand','parser.py',125),
+  ('operand -> expression','operand',1,'p_operand','parser.py',126),
+  ('operand -> LBREACKET REG RBREACKET','operand',3,'p_operand','parser.py',127),
+  ('operand -> LBREACKET REG DOTS expression RBREACKET','operand',5,'p_operand','parser.py',128),
+  ('operand -> LBREACKET expression DOTS REG RBREACKET','operand',5,'p_operand','parser.py',129),
+  ('operands -> operands COMMA operand','operands',3,'p_operands','parser.py',152),
+  ('operands -> operand','operands',1,'p_operands','parser.py',153),
 ]

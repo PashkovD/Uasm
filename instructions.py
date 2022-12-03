@@ -174,16 +174,8 @@ class EnumInstruction(Enum):
     SUB = new_reversible(OpSUB, OpSUBR)
     MOV = new_reversible(OpMOV, OpMOVR)
     CMP = new_reversible(OpCMP, OpCMPR)
-    JMP = new_imm(OpJMP)
-    JE = new_imm(OpJE)
-    JNE = new_imm(OpJNE)
-    JL = new_imm(OpJL)
-    JLE = new_imm(OpJLE)
-    JG = new_imm(OpJG)
-    JGE = new_imm(OpJGE)
     PUSH = InstPUSH
     POP = InstPOP
-    CALL = new_imm(OpCALL)
     RET = InstRET
     SHL = new_reversible(OpSHL, OpSHLR)
     SHR = new_reversible(OpSHR, OpSHRR)
@@ -191,3 +183,21 @@ class EnumInstruction(Enum):
     OR = new_reversible(OpOR, OpORR)
     XOR = new_reversible(OpXOR, OpXORR)
     NOT = InstNOT
+
+
+class EnumInstImm(Enum):
+    @staticmethod
+    def new(imm_opcode_: Type[IMMOpcode]) -> Type[BaseInstIMM]:
+        class NewInst(BaseInstIMM):
+            imm_opcode: Type[IMMOpcode] = imm_opcode_
+
+        return NewInst
+
+    JMP = new(OpJMP)
+    JE = new(OpJE)
+    JNE = new(OpJNE)
+    JL = new(OpJL)
+    JLE = new(OpJLE)
+    JG = new(OpJG)
+    JGE = new(OpJGE)
+    CALL = new(OpCALL)
