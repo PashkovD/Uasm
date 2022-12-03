@@ -131,11 +131,17 @@ class BaseInstLeft(BaseInstruction):
         return self.left_opcode(self.line, mod_rm)
 
 
-class InstRET(BaseInstruction):
-    def process(self) -> OpRET:
+class BaseInstClear(BaseInstruction):
+    clear_opcode: Type[BaseOpcode]
+
+    def process(self) -> BaseOpcode:
         if len(self.args) != 0:
             raise Exception(f"{self.line}: Incorrect number of args: {len(self.args)}")
-        return OpRET(self.line)
+        return self.clear_opcode(self.line)
+
+
+class InstRET(BaseInstClear):
+    clear_opcode = OpRET
 
 
 class EnumInstruction(Enum):
