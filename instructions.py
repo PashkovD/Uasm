@@ -112,8 +112,8 @@ class BaseInstIMM(BaseInstruction):
         return self.imm_opcode(self.line, self.args[0])
 
 
-class BaseInstReg(BaseInstruction):
-    reg_opcode: Type[ModRMOpcode]
+class BaseInstLeft(BaseInstruction):
+    left_opcode: Type[ModRMOpcode]
 
     def process(self) -> ModRMOpcode:
         if len(self.args) != 1:
@@ -128,15 +128,7 @@ class BaseInstReg(BaseInstruction):
             mod_rm = AtRegDispRM(self.args[0], Reg.AX)
         else:
             raise Exception
-        return self.reg_opcode(self.line, mod_rm)
-
-
-class InstPUSH(BaseInstReg):
-    reg_opcode = OpPUSH
-
-
-class InstPOP(BaseInstReg):
-    reg_opcode = OpPOP
+        return self.left_opcode(self.line, mod_rm)
 
 
 class InstRET(BaseInstruction):
@@ -144,10 +136,6 @@ class InstRET(BaseInstruction):
         if len(self.args) != 0:
             raise Exception(f"{self.line}: Incorrect number of args: {len(self.args)}")
         return OpRET(self.line)
-
-
-class InstNOT(BaseInstReg):
-    reg_opcode = OpNOT
 
 
 class EnumInstruction(Enum):
@@ -159,11 +147,11 @@ class EnumInstruction(Enum):
     RET = InstRET
 
 
-class EnumInstReg(Enum):
+class EnumInstLeft(Enum):
     @staticmethod
-    def new(reg_opcode_: Type[ModRMOpcode]) -> Type[BaseInstReg]:
-        class NewInst(BaseInstReg):
-            reg_opcode = reg_opcode_
+    def new(left_opcode_: Type[ModRMOpcode]) -> Type[BaseInstLeft]:
+        class NewInst(BaseInstLeft):
+            left_opcode = left_opcode_
 
         return NewInst
 

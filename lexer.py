@@ -1,13 +1,13 @@
 from ply import *
 
-from instructions import EnumInstruction, EnumInstImm, EnumInstReversible, EnumInstReg
+from instructions import EnumInstruction, EnumInstImm, EnumInstReversible, EnumInstLeft
 from regs import Reg
 
 
 class Lexer:
     tokens = (
         'PLUS', 'MINUS', 'RBREACKET', 'LBREACKET',
-        'COMMA', 'DOT', 'DOTS', 'INTEGER', 'STRING', 'REG', 'OPCODE', 'InstImm', 'InstReversible', 'InstReg',
+        'COMMA', 'DOT', 'DOTS', 'INTEGER', 'STRING', 'REG', 'OPCODE', 'InstImm', 'InstReversible', 'InstLeft',
         'ID', 'NEWLINE'
     )
 
@@ -61,8 +61,8 @@ class Lexer:
         except KeyError:
             ...
         try:
-            t.value = EnumInstReg[t.value.upper()]
-            t.type = 'InstReg'
+            t.value = EnumInstLeft[t.value.upper()]
+            t.type = 'InstLeft'
             return t
         except KeyError:
             ...
