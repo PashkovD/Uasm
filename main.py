@@ -95,7 +95,6 @@ text2: str = """
     call print_num
     inc ax
     call print_fizzbuzz
-    data 255
     jmp start
 
 .stack

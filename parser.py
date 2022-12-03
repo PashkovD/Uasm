@@ -1,7 +1,7 @@
 from typing import List, Union, Dict
 
 from ply import *
-import lexer
+from lexer import Lexer
 from instructions import EnumInstruction, BaseInstruction
 from modrm import Address, AddressDisp
 from regs import Reg
@@ -14,7 +14,7 @@ class NedoDict(dict):
 
 id_dict: Dict[str, int] = NedoDict()
 
-tokens = lexer.tokens
+tokens = Lexer.tokens
 
 precedence = (
     ('left', 'DOT'),
@@ -149,4 +149,4 @@ parser = yacc.yacc()
 
 
 def parse(data: str) -> List[Union[Pointer, BaseInstruction]]:
-    return parser.parse(data)
+    return parser.parse(data, lexer=Lexer().lexer)
