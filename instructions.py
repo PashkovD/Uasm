@@ -151,38 +151,34 @@ class InstNOT(BaseInstReg):
 
 
 class EnumInstruction(Enum):
+    INC = InstINC
+    DEC = InstDEC
+    TIMES = InstTIMES
+    DATA = InstData
+    PUSH = InstPUSH
+    POP = InstPOP
+    RET = InstRET
+    NOT = InstNOT
+
+
+class EnumInstReversible(Enum):
     @staticmethod
-    def new_reversible(normal_: Type[ModRMOpcode], reverse_: Type[ModRMOpcode]) -> Type[BaseInstReversible]:
+    def new(normal_: Type[ModRMOpcode], reverse_: Type[ModRMOpcode]) -> Type[BaseInstReversible]:
         class NewInst(BaseInstReversible):
             normal: Type[ModRMOpcode] = normal_
             reverse: Type[ModRMOpcode] = reverse_
 
         return NewInst
 
-    @staticmethod
-    def new_imm(imm_opcode_: Type[IMMOpcode]) -> Type[BaseInstIMM]:
-        class NewInst(BaseInstIMM):
-            imm_opcode: Type[IMMOpcode] = imm_opcode_
-
-        return NewInst
-
-    INC = InstINC
-    DEC = InstDEC
-    TIMES = InstTIMES
-    DATA = InstData
-    ADD = new_reversible(OpADD, OpADDR)
-    SUB = new_reversible(OpSUB, OpSUBR)
-    MOV = new_reversible(OpMOV, OpMOVR)
-    CMP = new_reversible(OpCMP, OpCMPR)
-    PUSH = InstPUSH
-    POP = InstPOP
-    RET = InstRET
-    SHL = new_reversible(OpSHL, OpSHLR)
-    SHR = new_reversible(OpSHR, OpSHRR)
-    AND = new_reversible(OpAND, OpANDR)
-    OR = new_reversible(OpOR, OpORR)
-    XOR = new_reversible(OpXOR, OpXORR)
-    NOT = InstNOT
+    ADD = new(OpADD, OpADDR)
+    SUB = new(OpSUB, OpSUBR)
+    MOV = new(OpMOV, OpMOVR)
+    CMP = new(OpCMP, OpCMPR)
+    SHL = new(OpSHL, OpSHLR)
+    SHR = new(OpSHR, OpSHRR)
+    AND = new(OpAND, OpANDR)
+    OR = new(OpOR, OpORR)
+    XOR = new(OpXOR, OpXORR)
 
 
 class EnumInstImm(Enum):
