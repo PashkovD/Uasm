@@ -1,6 +1,3 @@
-from enum import Enum
-from typing import Type
-
 from modrm import AddressDisp, Address, DispRM, RegRM, AtRegRM, AtRegDispRM
 from opcodes import *
 from regs import Reg
@@ -104,51 +101,6 @@ class BaseInstReversible(BaseInstruction):
         return self.normal(self.line, mod_rm)
 
 
-class InstADD(BaseInstReversible):
-    normal = OpADD
-    reverse = OpADDR
-
-
-class InstSUB(BaseInstReversible):
-    normal = OpSUB
-    reverse = OpSUBR
-
-
-class InstMOV(BaseInstReversible):
-    normal = OpMOV
-    reverse = OpMOVR
-
-
-class InstCMP(BaseInstReversible):
-    normal = OpCMP
-    reverse = OpCMPR
-
-
-class InstSHL(BaseInstReversible):
-    normal = OpSHL
-    reverse = OpSHLR
-
-
-class InstSHR(BaseInstReversible):
-    normal = OpSHR
-    reverse = OpSHRR
-
-
-class InstAND(BaseInstReversible):
-    normal = OpAND
-    reverse = OpANDR
-
-
-class InstOR(BaseInstReversible):
-    normal = OpOR
-    reverse = OpORR
-
-
-class InstXOR(BaseInstReversible):
-    normal = OpXOR
-    reverse = OpXORR
-
-
 class BaseInstIMM(BaseInstruction):
     imm_opcode: Type[IMMOpcode]
 
@@ -158,34 +110,6 @@ class BaseInstIMM(BaseInstruction):
         if type(self.args[0]) != int:
             raise Exception(f"{self.line}: Incorrect argument: {type(self.args[0]).__name__}")
         return self.imm_opcode(self.line, self.args[0])
-
-
-class InstJMP(BaseInstIMM):
-    imm_opcode = OpJMP
-
-
-class InstJE(BaseInstIMM):
-    imm_opcode = OpJE
-
-
-class InstJNE(BaseInstIMM):
-    imm_opcode = OpJNE
-
-
-class InstJL(BaseInstIMM):
-    imm_opcode = OpJL
-
-
-class InstJLE(BaseInstIMM):
-    imm_opcode = OpJLE
-
-
-class InstJG(BaseInstIMM):
-    imm_opcode = OpJG
-
-
-class InstJGE(BaseInstIMM):
-    imm_opcode = OpJGE
 
 
 class BaseInstReg(BaseInstruction):
@@ -215,10 +139,6 @@ class InstPOP(BaseInstReg):
     reg_opcode = OpPOP
 
 
-class InstCALL(BaseInstIMM):
-    imm_opcode = OpCALL
-
-
 class InstRET(BaseInstruction):
     def process(self) -> OpRET:
         if len(self.args) != 0:
@@ -227,32 +147,47 @@ class InstRET(BaseInstruction):
 
 
 class InstNOT(BaseInstReg):
-     reg_opcode = OpNOT
+    reg_opcode = OpNOT
 
 
 class EnumInstruction(Enum):
+    @staticmethod
+    def new_reversible(normal_: Type[ModRMOpcode], reverse_: Type[ModRMOpcode]) -> Type[BaseInstReversible]:
+        class NewInst(BaseInstReversible):
+            normal: Type[ModRMOpcode] = normal_
+            reverse: Type[ModRMOpcode] = reverse_
+
+        return NewInst
+
+    @staticmethod
+    def new_imm(imm_opcode_: Type[IMMOpcode]) -> Type[BaseInstIMM]:
+        class NewInst(BaseInstIMM):
+            imm_opcode: Type[IMMOpcode] = imm_opcode_
+
+        return NewInst
+
     INC = InstINC
     DEC = InstDEC
     TIMES = InstTIMES
     DATA = InstData
-    ADD = InstADD
-    SUB = InstSUB
-    MOV = InstMOV
-    CMP = InstCMP
-    JMP = InstJMP
-    JE = InstJE
-    JNE = InstJNE
-    JL = InstJL
-    JLE = InstJLE
-    JG = InstJG
-    JGE = InstJGE
+    ADD = new_reversible(OpADD, OpADDR)
+    SUB = new_reversible(OpSUB, OpSUBR)
+    MOV = new_reversible(OpMOV, OpMOVR)
+    CMP = new_reversible(OpCMP, OpCMPR)
+    JMP = new_imm(OpJMP)
+    JE = new_imm(OpJE)
+    JNE = new_imm(OpJNE)
+    JL = new_imm(OpJL)
+    JLE = new_imm(OpJLE)
+    JG = new_imm(OpJG)
+    JGE = new_imm(OpJGE)
     PUSH = InstPUSH
     POP = InstPOP
-    CALL = InstCALL
+    CALL = new_imm(OpCALL)
     RET = InstRET
-    SHL = InstSHL
-    SHR = InstSHR
-    AND = InstAND
-    OR = InstOR
-    XOR = InstXOR
+    SHL = new_reversible(OpSHL, OpSHLR)
+    SHR = new_reversible(OpSHR, OpSHRR)
+    AND = new_reversible(OpAND, OpANDR)
+    OR = new_reversible(OpOR, OpORR)
+    XOR = new_reversible(OpXOR, OpXORR)
     NOT = InstNOT
