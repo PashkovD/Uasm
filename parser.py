@@ -126,6 +126,11 @@ class Parser:
         p[0] = p[1].value([p[2], p[4]], p.slice[1].lineno)
 
     @staticmethod
+    def p_instruction_reg(p):
+        """instruction : InstReg operand NEWLINE"""
+        p[0] = p[1].value([p[2]], p.slice[1].lineno)
+
+    @staticmethod
     def p_operand(p):
         """operand : REG
                    | STRING

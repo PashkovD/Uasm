@@ -155,10 +155,21 @@ class EnumInstruction(Enum):
     DEC = InstDEC
     TIMES = InstTIMES
     DATA = InstData
-    PUSH = InstPUSH
-    POP = InstPOP
+
     RET = InstRET
-    NOT = InstNOT
+
+
+class EnumInstReg(Enum):
+    @staticmethod
+    def new(reg_opcode_: Type[ModRMOpcode]) -> Type[BaseInstReg]:
+        class NewInst(BaseInstReg):
+            reg_opcode = reg_opcode_
+
+        return NewInst
+
+    PUSH = new(OpPUSH)
+    POP = new(OpPOP)
+    NOT = new(OpNOT)
 
 
 class EnumInstReversible(Enum):
