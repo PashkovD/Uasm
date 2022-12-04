@@ -123,16 +123,12 @@ class BaseInstReversible(BaseInstruction):
 class BaseInstIMM(BaseInstruction):
     imm_opcode: Type[IMMOpcode]
 
-    def __init__(self, args: list, line: int):
-        self.args = args
+    def __init__(self, num: int, line: int):
+        self.num: int = num
         super().__init__(line)
 
     def process(self) -> IMMOpcode:
-        if len(self.args) != 1:
-            raise Exception(f"{self.line}: Incorrect number of args: {len(self.args)}")
-        if type(self.args[0]) != int:
-            raise Exception(f"{self.line}: Incorrect argument: {type(self.args[0]).__name__}")
-        return self.imm_opcode(self.line, self.args[0])
+        return self.imm_opcode(self.line, self.num)
 
 
 class BaseInstLeft(BaseInstruction):
