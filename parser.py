@@ -121,8 +121,18 @@ class Parser:
 
     @staticmethod
     def p_instruction_rev(p):
-        """instruction : InstReversible operand COMMA operand NEWLINE"""
-        p[0] = p[1].value([p[2], p[4]], p.slice[1].lineno)
+        """instruction : InstReversible REG COMMA REG NEWLINE
+                       | InstReversible addr COMMA REG NEWLINE
+                       | InstReversible addr_disp COMMA REG NEWLINE
+                       | InstReversible expression COMMA REG NEWLINE"""
+        p[0] = p[1].value(p[2], p[4], is_reversed=False, line=p.slice[1].lineno)
+
+    @staticmethod
+    def p_instruction_rev_reversed(p):
+        """instruction : InstReversible REG COMMA addr NEWLINE
+                       | InstReversible REG COMMA addr_disp NEWLINE
+                       | InstReversible REG COMMA expression NEWLINE"""
+        p[0] = p[1].value(p[4], p[2], is_reversed=True, line=p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_left(p):
@@ -133,6 +143,21 @@ class Parser:
     def p_instruction_clear(p):
         """instruction : InstClear NEWLINE"""
         p[0] = p[1].value([], p.slice[1].lineno)
+
+    @staticmethod
+    def p_addr(p):
+        """addr : LBREACKET REG RBREACKET"""
+        p[0] = Address(p[2])
+
+    @staticmethod
+    def p_addr_disp(p):
+        """addr_disp : LBREACKET REG DOTS expression RBREACKET"""
+        p[0] = AddressDisp(p[2], p[4])
+
+    @staticmethod
+    def p_addr_disp_reversed(p):
+        """addr_disp : LBREACKET expression DOTS REG RBREACKET"""
+        p[0] = AddressDisp(p[4], p[2])
 
     @staticmethod
     def p_operand(p):

@@ -79,39 +79,29 @@ class InstDEC(BaseInstruction):
 
 
 class BaseInstReversible(BaseInstruction):
-    normal: Type[ModRMOpcode]
-    reverse: Type[ModRMOpcode]
+    normal_opcode: Type[ModRMOpcode]
+    reverse_opcode: Type[ModRMOpcode]
 
-    def __init__(self, args: list, line: int):
-        self.args = args
+    def __init__(self, left: Union[Reg, int, Address, AddressDisp], right: Reg, is_reversed: bool, line: int):
+        self.left = left
+        self.right = right
+        self.is_reversed = is_reversed
         super().__init__(line)
 
     def process(self) -> ModRMOpcode:
-        if len(self.args) != 2:
-            raise Exception(f"{self.line}: Incorrect number of args: {len(self.args)}")
-        if not any((isinstance(i, Reg) and i in Reg) for i in self.args):
-            raise Exception(
-                f"{self.line}: Incorrect combination of args: {type(self.args[0]).__name__}, {type(self.args[1]).__name__}")
-        reverse = not isinstance(self.args[1], Reg)
-        temp = None
-        if reverse:
-            temp = self.args
-            self.args = self.args.copy()
-            self.args[0], self.args[1] = self.args[1], self.args[0]
-        if isinstance(self.args[0], Reg):
-            mod_rm = RegRM(self.args[0], self.args[1])
-        elif isinstance(self.args[0], int):
-            mod_rm = DispRM(self.args[0], self.args[1])
-        elif isinstance(self.args[0], Address):
-            mod_rm = AtRegRM(self.args[0], self.args[1])
-        elif isinstance(self.args[0], AddressDisp):
-            mod_rm = AtRegDispRM(self.args[0], self.args[1])
+        if isinstance(self.left, Reg):
+            mod_rm = RegRM(self.left, self.right)
+        elif isinstance(self.left, int):
+            mod_rm = DispRM(self.left, self.right)
+        elif isinstance(self.left, Address):
+            mod_rm = AtRegRM(self.left, self.right)
+        elif isinstance(self.left, AddressDisp):
+            mod_rm = AtRegDispRM(self.left, self.right)
         else:
             raise Exception
-        if reverse:
-            self.args = temp
-            return self.reverse(self.line, mod_rm)
-        return self.normal(self.line, mod_rm)
+        if self.is_reversed:
+            return self.reverse_opcode(self.line, mod_rm)
+        return self.normal_opcode(self.line, mod_rm)
 
 
 class BaseInstIMM(BaseInstruction):
@@ -176,8 +166,8 @@ class EnumInstReversible(Enum):
     @staticmethod
     def new(normal_: Type[ModRMOpcode], reverse_: Type[ModRMOpcode]) -> Type[BaseInstReversible]:
         class NewInst(BaseInstReversible):
-            normal: Type[ModRMOpcode] = normal_
-            reverse: Type[ModRMOpcode] = reverse_
+            normal_opcode: Type[ModRMOpcode] = normal_
+            reverse_opcode: Type[ModRMOpcode] = reverse_
 
         return NewInst
 
