@@ -5,7 +5,6 @@ from ply import *
 from instructions import BaseInstruction
 from lexer import Lexer
 from modrm import Address, AddressDisp
-from regs import Reg
 
 
 class NedoDict(dict):
@@ -161,34 +160,6 @@ class Parser:
     def p_addr_disp_reversed(p):
         """addr_disp : LBREACKET expression DOTS REG RBREACKET"""
         p[0] = AddressDisp(p[4], p[2])
-
-    @staticmethod
-    def p_operand(p):
-        """operand : REG
-                   | STRING
-                   | expression
-                   | LBREACKET REG RBREACKET
-                   | LBREACKET REG DOTS expression RBREACKET
-                   | LBREACKET expression DOTS REG """
-        if len(p) == 4:
-            p[0] = Address(p[2])
-        elif len(p) == 6:
-            reg: Reg
-            disp: int
-            if isinstance(p[2], Reg):
-                reg, disp = p[2], p[4]
-            else:
-                reg, disp = p[4], p[2]
-            if isinstance(disp, str):
-                disp = id_dict[disp]
-            p[0] = AddressDisp(reg, disp)
-
-        elif len(p) == 2:
-            if p.slice[1].type == "ID":
-                p[1] = id_dict[p[1]]
-            p[0] = p[1]
-        else:
-            raise Exception
 
     @staticmethod
     def p_data_operand(p):
