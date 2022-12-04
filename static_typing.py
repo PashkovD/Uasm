@@ -24,7 +24,7 @@ def static_typing(function: Callable) -> Callable:
             if not isinstance(f, args_types[i]):
                 raise TypeError(f"Argument with pos {i + 1} got wrong type. Expected {args_types[i]}, got {type(f)}")
 
-        for i, f in kwargs:
+        for i, f in kwargs.items():
             if not isinstance(f, kwargs_types[i]):
                 raise TypeError(f"Argument '{i}' got wrong type. Expected {kwargs_types[i]}, got {type(f)}")
 
