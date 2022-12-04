@@ -96,12 +96,12 @@ class Parser:
 
     @staticmethod
     def p_instruction_data(p):
-        """instruction : OpData operands NEWLINE"""
+        """instruction : OpData data_operands NEWLINE"""
         p[0] = p[1](p[2], p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_times(p):
-        """instruction : OpTimes operands NEWLINE"""
+        """instruction : OpTimes expression COMMA data_operands NEWLINE"""
         p[0] = p[1](p[2], p.slice[1].lineno)
 
     @staticmethod
@@ -196,6 +196,23 @@ class Parser:
             p[0].append(p[3])
         else:
             p[0] = [p[1]]
+
+    @staticmethod
+    def p_data_operand(p):
+        """data_operand   : expression
+                          | STRING"""
+        p[0] = p[1]
+
+    @staticmethod
+    def p_data_operands_start(p):
+        """data_operands   : data_operand"""
+        p[0] = [p[1]]
+
+    @staticmethod
+    def p_data_operands(p):
+        """data_operands   : data_operands COMMA data_operand"""
+        p[0] = p[1]
+        p[0].append(p[3])
 
 
 def parse(data: str) -> List[Union[Pointer, BaseInstruction]]:

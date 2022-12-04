@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List
 
 from modrm import AddressDisp, Address, DispRM, RegRM, AtRegRM, AtRegDispRM
 from opcodes import *
@@ -17,17 +17,11 @@ class BaseInstruction:
 
 
 class InstData(BaseInstruction):
-    def __init__(self, args: list, line: int):
+    def __init__(self, args: List[Union[str, int]], line: int):
         self.args = args
         super().__init__(line)
 
     def process(self) -> BaseOpcode:
-        if len(self.args) < 1:
-            raise Exception(f"{self.line}: less one Data args")
-        if any((isinstance(i, Reg) and i in Reg) for i in self.args):
-            raise Exception(f"{self.line}: Reg in Data args")
-        if (Address in self.args) or (AddressDisp in self.args):
-            raise Exception(f"{self.line}: Address in Data args")
         line: bytes = bytes()
         for i in self.args:
             if isinstance(i, str):
@@ -38,26 +32,19 @@ class InstData(BaseInstruction):
 
 
 class InstTIMES(BaseInstruction):
-    def __init__(self, args: list, line: int):
+    def __init__(self, args: List[Union[str, int]], num: int, line: int):
+        self.num = num
         self.args = args
         super().__init__(line)
 
     def process(self) -> BaseOpcode:
-        if len(self.args) < 2:
-            raise Exception(f"{self.line}: Too few TIMES args: {len(self.args)}")
-        if any((isinstance(i, Reg) and i in Reg) for i in self.args):
-            raise Exception(f"{self.line}: Reg in TIMES args")
-        if (Address in self.args) or (AddressDisp in self.args):
-            raise Exception(f"{self.line}: Address in TIMES args")
-        if self.args[0] < 1:
-            raise Exception(f"{self.line}: Num less zero in TIMES args {self.args[0]}")
         line: bytes = bytes()
-        for i in self.args[1:]:
+        for i in self.args:
             if isinstance(i, str):
                 line += bytes(i, "utf-8")
                 continue
             line += bytes((i,))
-        return OpDATA(self.line, line * self.args[0])
+        return OpDATA(self.line, line * self.num)
 
 
 class InstINC(BaseInstruction):
