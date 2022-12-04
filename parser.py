@@ -107,12 +107,12 @@ class Parser:
     @staticmethod
     def p_instruction_inc(p):
         """instruction : OpDec REG NEWLINE"""
-        p[0] = p[1]([p[2]], p.slice[1].lineno)
+        p[0] = p[1](p[2], p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_dec(p):
         """instruction : OpInc REG NEWLINE"""
-        p[0] = p[1]([p[2]], p.slice[1].lineno)
+        p[0] = p[1](p[2], p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_imm(p):

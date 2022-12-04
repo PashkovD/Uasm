@@ -59,29 +59,21 @@ class InstTIMES(BaseInstruction):
 
 
 class InstINC(BaseInstruction):
-    def __init__(self, args: list, line: int):
-        self.args = args
+    def __init__(self, reg: Reg, line: int):
+        self.reg: Reg = reg
         super().__init__(line)
 
     def process(self) -> BaseOpcode:
-        if len(self.args) < 1:
-            raise Exception(f"{self.line}: Too few INC args: {len(self.args)}")
-        if not isinstance(self.args[0], Reg):
-            raise Exception(f"{self.line}: incorrect type arg: {type(self.args[0])}")
-        return OpADDR(self.line, DispRM(1, self.args[0]))
+        return OpADDR(self.line, DispRM(1, self.reg))
 
 
 class InstDEC(BaseInstruction):
-    def __init__(self, args: list, line: int):
-        self.args = args
+    def __init__(self, reg: Reg, line: int):
+        self.reg: Reg = reg
         super().__init__(line)
 
     def process(self) -> BaseOpcode:
-        if len(self.args) < 1:
-            raise Exception(f"{self.line}: Too few DEC args: {len(self.args)}")
-        if not isinstance(self.args[0], Reg):
-            raise Exception(f"{self.line}: incorrect type arg: {type(self.args[0])}")
-        return OpSUBR(self.line, DispRM(1, self.args[0]))
+        return OpSUBR(self.line, DispRM(1, self.reg))
 
 
 class BaseInstReversible(BaseInstruction):
