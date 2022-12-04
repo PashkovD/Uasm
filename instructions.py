@@ -3,9 +3,11 @@ from typing import Union, List
 from modrm import AddressDisp, Address, DispRM, RegRM, AtRegRM, AtRegDispRM
 from opcodes import *
 from regs import Reg
+from static_typing import static_typing
 
 
 class BaseInstruction:
+    @static_typing
     def __init__(self, line: int):
         self.line: int = line
 
