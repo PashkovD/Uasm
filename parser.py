@@ -96,12 +96,12 @@ class Parser:
     @staticmethod
     def p_instruction_data(p):
         """instruction : OpData data_operands NEWLINE"""
-        p[0] = p[1](p[2], p.slice[1].lineno)
+        p[0] = p[1](p[2], line=p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_times(p):
         """instruction : OpTimes expression COMMA data_operands NEWLINE"""
-        p[0] = p[1](p[4] * p[2], p.slice[1].lineno)
+        p[0] = p[1](p[4] * p[2], line=p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_inc(p):
@@ -116,7 +116,7 @@ class Parser:
     @staticmethod
     def p_instruction_imm(p):
         """instruction : InstImm expression NEWLINE"""
-        p[0] = p[1].value(p[2], p.slice[1].lineno)
+        p[0] = p[1].value(p[2], line=p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_rev(p):
@@ -139,12 +139,12 @@ class Parser:
                        | InstLeft REG NEWLINE
                        | InstLeft addr NEWLINE
                        | InstLeft addr_disp NEWLINE"""
-        p[0] = p[1].value(p[2], p.slice[1].lineno)
+        p[0] = p[1].value(p[2], line=p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_clear(p):
         """instruction : InstClear NEWLINE"""
-        p[0] = p[1].value(p.slice[1].lineno)
+        p[0] = p[1].value(line=p.slice[1].lineno)
 
     @staticmethod
     def p_addr(p):

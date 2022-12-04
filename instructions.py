@@ -9,7 +9,7 @@ from regs import Reg
 
 class BaseInstruction:
     @typechecked
-    def __init__(self, line: int):
+    def __init__(self, *, line: int):
         self.line: int = line
 
     def __repr__(self):
@@ -21,9 +21,9 @@ class BaseInstruction:
 
 class InstData(BaseInstruction):
     @typechecked
-    def __init__(self, args: List[Union[str, int]], line: int):
+    def __init__(self, args: List[Union[str, int]], *, line: int):
         self.args = args
-        super().__init__(line)
+        super().__init__(line=line)
 
     def process(self) -> BaseOpcode:
         line: bytes = bytes()
@@ -40,11 +40,11 @@ class BaseInstReversible(BaseInstruction):
     reverse_opcode: Type[ModRMOpcode]
 
     @typechecked
-    def __init__(self, left: Union[Reg, int, Address, AddressDisp], right: Reg, is_reversed: bool, line: int):
+    def __init__(self, left: Union[Reg, int, Address, AddressDisp], right: Reg, is_reversed: bool, *, line: int):
         self.left = left
         self.right = right
         self.is_reversed = is_reversed
-        super().__init__(line)
+        super().__init__(line=line)
 
     def process(self) -> ModRMOpcode:
         if isinstance(self.left, Reg):
@@ -66,9 +66,9 @@ class BaseInstIMM(BaseInstruction):
     imm_opcode: Type[IMMOpcode]
 
     @typechecked
-    def __init__(self, num: int, line: int):
+    def __init__(self, num: int, *, line: int):
         self.num: int = num
-        super().__init__(line)
+        super().__init__(line=line)
 
     def process(self) -> IMMOpcode:
         return self.imm_opcode(self.line, self.num)
@@ -78,9 +78,9 @@ class BaseInstLeft(BaseInstruction):
     left_opcode: Type[ModRMOpcode]
 
     @typechecked
-    def __init__(self, arg: Union[Reg, int, Address, AddressDisp], line: int):
+    def __init__(self, arg: Union[Reg, int, Address, AddressDisp], *, line: int):
         self.arg = arg
-        super().__init__(line)
+        super().__init__(line=line)
 
     def process(self) -> ModRMOpcode:
         if isinstance(self.arg, Reg):
