@@ -140,17 +140,11 @@ class BaseInstClear(BaseInstruction):
         return self.clear_opcode(self.line)
 
 
-class InstRET(BaseInstClear):
-    clear_opcode = OpRET
-
-
 class EnumInstruction(Enum):
     INC = InstINC
     DEC = InstDEC
     TIMES = InstTIMES
     DATA = InstData
-
-    RET = InstRET
 
 
 class EnumInstLeft(Enum):
@@ -202,3 +196,14 @@ class EnumInstImm(Enum):
     JG = new(OpJG)
     JGE = new(OpJGE)
     CALL = new(OpCALL)
+
+
+class EnumInstClear(Enum):
+    @staticmethod
+    def new(clear_opcode_: Type[BaseOpcode]) -> Type[BaseInstClear]:
+        class NewInst(BaseInstClear):
+            clear_opcode = clear_opcode_
+
+        return NewInst
+
+    RET = new(OpRET)

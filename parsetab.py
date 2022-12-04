@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftDOTleftMINUSPLUSCOMMA DOT DOTS ID INTEGER InstImm InstLeft InstReversible LBREACKET MINUS NEWLINE OPCODE PLUS RBREACKET REG STRINGcode : code instruction\n                | code pointer\n                | code NEWLINE\n                | pointer\n                | instruction\n                | NEWLINEpointer : DOT ID NEWLINEexpression : IDexpression : INTEGERexpression : MINUS INTEGERexpression : expression PLUS expression\n                      | expression MINUS expressioninstruction : OPCODE operands NEWLINE\n                       | OPCODE NEWLINEinstruction : InstImm expression NEWLINEinstruction : InstReversible operand COMMA operand NEWLINEinstruction : InstLeft operand NEWLINEoperand : REG\n                   | STRING\n                   | expression\n                   | LBREACKET REG RBREACKET\n                   | LBREACKET REG DOTS expression RBREACKET\n                   | LBREACKET expression DOTS REG RBREACKEToperands   : operands COMMA operand\n                      | operand'
+_lr_signature = 'leftDOTleftMINUSPLUSCOMMA DOT DOTS ID INTEGER InstClear InstImm InstLeft InstReversible LBREACKET MINUS NEWLINE OPCODE PLUS RBREACKET REG STRINGcode : code instruction\n                | code pointer\n                | code NEWLINE\n                | pointer\n                | instruction\n                | NEWLINEpointer : DOT ID NEWLINEexpression : IDexpression : INTEGERexpression : MINUS INTEGERexpression : expression PLUS expression\n                      | expression MINUS expressioninstruction : OPCODE operands NEWLINE\n                       | OPCODE NEWLINEinstruction : InstImm expression NEWLINEinstruction : InstReversible operand COMMA operand NEWLINEinstruction : InstLeft operand NEWLINEinstruction : InstClear NEWLINEoperand : REG\n                   | STRING\n                   | expression\n                   | LBREACKET REG RBREACKET\n                   | LBREACKET REG DOTS expression RBREACKET\n                   | LBREACKET expression DOTS REG RBREACKEToperands   : operands COMMA operand\n                      | operand'
     
-_lr_action_items = {'NEWLINE':([0,1,2,3,4,6,10,11,12,13,14,15,16,17,18,19,21,22,24,26,27,28,34,35,37,38,39,40,41,44,47,48,49,],[4,12,-5,-4,-6,15,-1,-2,-3,27,28,-14,-25,-18,-19,-20,-8,-9,35,37,-7,-13,-10,-15,-17,-24,-11,-12,-21,47,-16,-22,-23,]),'DOT':([0,1,2,3,4,10,11,12,15,27,28,35,37,47,],[5,5,-5,-4,-6,-1,-2,-3,-14,-7,-13,-15,-17,-16,]),'OPCODE':([0,1,2,3,4,10,11,12,15,27,28,35,37,47,],[6,6,-5,-4,-6,-1,-2,-3,-14,-7,-13,-15,-17,-16,]),'InstImm':([0,1,2,3,4,10,11,12,15,27,28,35,37,47,],[7,7,-5,-4,-6,-1,-2,-3,-14,-7,-13,-15,-17,-16,]),'InstReversible':([0,1,2,3,4,10,11,12,15,27,28,35,37,47,],[8,8,-5,-4,-6,-1,-2,-3,-14,-7,-13,-15,-17,-16,]),'InstLeft':([0,1,2,3,4,10,11,12,15,27,28,35,37,47,],[9,9,-5,-4,-6,-1,-2,-3,-14,-7,-13,-15,-17,-16,]),'$end':([1,2,3,4,10,11,12,15,27,28,35,37,47,],[0,-5,-4,-6,-1,-2,-3,-14,-7,-13,-15,-17,-16,]),'ID':([5,6,7,8,9,20,29,30,31,36,42,],[13,21,21,21,21,21,21,21,21,21,21,]),'REG':([6,8,9,20,29,36,43,],[17,17,17,32,17,17,46,]),'STRING':([6,8,9,29,36,],[18,18,18,18,18,]),'LBREACKET':([6,8,9,29,36,],[20,20,20,20,20,]),'INTEGER':([6,7,8,9,20,23,29,30,31,36,42,],[22,22,22,22,22,34,22,22,22,22,22,]),'MINUS':([6,7,8,9,19,20,21,22,24,29,30,31,33,34,36,39,40,42,45,],[23,23,23,23,31,23,-8,-9,31,23,23,23,31,-10,23,-11,-12,23,31,]),'COMMA':([14,16,17,18,19,21,22,25,34,38,39,40,41,48,49,],[29,-25,-18,-19,-20,-8,-9,36,-10,-24,-11,-12,-21,-22,-23,]),'PLUS':([19,21,22,24,33,34,39,40,45,],[30,-8,-9,30,30,-10,-11,-12,30,]),'DOTS':([21,22,32,33,34,39,40,],[-8,-9,42,43,-10,-11,-12,]),'RBREACKET':([21,22,32,34,39,40,45,46,],[-8,-9,41,-10,-11,-12,48,49,]),}
+_lr_action_items = {'NEWLINE':([0,1,2,3,4,6,10,11,12,13,14,15,16,17,18,19,20,22,23,25,27,28,29,30,36,37,39,40,41,42,43,46,49,50,51,],[4,13,-5,-4,-6,16,28,-1,-2,-3,29,30,-14,-26,-19,-20,-21,-8,-9,37,39,-18,-7,-13,-10,-15,-17,-25,-11,-12,-22,49,-16,-23,-24,]),'DOT':([0,1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[5,5,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'OPCODE':([0,1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[6,6,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'InstImm':([0,1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[7,7,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'InstReversible':([0,1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[8,8,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'InstLeft':([0,1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[9,9,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'InstClear':([0,1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[10,10,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'$end':([1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[0,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'ID':([5,6,7,8,9,21,31,32,33,38,44,],[14,22,22,22,22,22,22,22,22,22,22,]),'REG':([6,8,9,21,31,38,45,],[18,18,18,34,18,18,48,]),'STRING':([6,8,9,31,38,],[19,19,19,19,19,]),'LBREACKET':([6,8,9,31,38,],[21,21,21,21,21,]),'INTEGER':([6,7,8,9,21,24,31,32,33,38,44,],[23,23,23,23,23,36,23,23,23,23,23,]),'MINUS':([6,7,8,9,20,21,22,23,25,31,32,33,35,36,38,41,42,44,47,],[24,24,24,24,33,24,-8,-9,33,24,24,24,33,-10,24,-11,-12,24,33,]),'COMMA':([15,17,18,19,20,22,23,26,36,40,41,42,43,50,51,],[31,-26,-19,-20,-21,-8,-9,38,-10,-25,-11,-12,-22,-23,-24,]),'PLUS':([20,22,23,25,35,36,41,42,47,],[32,-8,-9,32,32,-10,-11,-12,32,]),'DOTS':([22,23,34,35,36,41,42,],[-8,-9,44,45,-10,-11,-12,]),'RBREACKET':([22,23,34,36,41,42,47,48,],[-8,-9,43,-10,-11,-12,50,51,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'code':([0,],[1,]),'instruction':([0,1,],[2,10,]),'pointer':([0,1,],[3,11,]),'operands':([6,],[14,]),'operand':([6,8,9,29,36,],[16,25,26,38,44,]),'expression':([6,7,8,9,20,29,30,31,36,42,],[19,24,19,19,33,19,39,40,19,45,]),}
+_lr_goto_items = {'code':([0,],[1,]),'instruction':([0,1,],[2,11,]),'pointer':([0,1,],[3,12,]),'operands':([6,],[15,]),'operand':([6,8,9,31,38,],[17,26,27,40,46,]),'expression':([6,7,8,9,21,31,32,33,38,44,],[20,25,20,20,35,20,41,42,20,47,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -44,12 +44,13 @@ _lr_productions = [
   ('instruction -> InstImm expression NEWLINE','instruction',3,'p_instruction_imm','parser.py',119),
   ('instruction -> InstReversible operand COMMA operand NEWLINE','instruction',5,'p_instruction_rev','parser.py',124),
   ('instruction -> InstLeft operand NEWLINE','instruction',3,'p_instruction_left','parser.py',129),
-  ('operand -> REG','operand',1,'p_operand','parser.py',134),
-  ('operand -> STRING','operand',1,'p_operand','parser.py',135),
-  ('operand -> expression','operand',1,'p_operand','parser.py',136),
-  ('operand -> LBREACKET REG RBREACKET','operand',3,'p_operand','parser.py',137),
-  ('operand -> LBREACKET REG DOTS expression RBREACKET','operand',5,'p_operand','parser.py',138),
-  ('operand -> LBREACKET expression DOTS REG RBREACKET','operand',5,'p_operand','parser.py',139),
-  ('operands -> operands COMMA operand','operands',3,'p_operands','parser.py',162),
-  ('operands -> operand','operands',1,'p_operands','parser.py',163),
+  ('instruction -> InstClear NEWLINE','instruction',2,'p_instruction_clear','parser.py',134),
+  ('operand -> REG','operand',1,'p_operand','parser.py',139),
+  ('operand -> STRING','operand',1,'p_operand','parser.py',140),
+  ('operand -> expression','operand',1,'p_operand','parser.py',141),
+  ('operand -> LBREACKET REG RBREACKET','operand',3,'p_operand','parser.py',142),
+  ('operand -> LBREACKET REG DOTS expression RBREACKET','operand',5,'p_operand','parser.py',143),
+  ('operand -> LBREACKET expression DOTS REG RBREACKET','operand',5,'p_operand','parser.py',144),
+  ('operands -> operands COMMA operand','operands',3,'p_operands','parser.py',167),
+  ('operands -> operand','operands',1,'p_operands','parser.py',168),
 ]
