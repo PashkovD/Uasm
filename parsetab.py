@@ -6,9 +6,45 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftDOTleftMINUSPLUSCOMMA DOT DOTS ID INTEGER InstClear InstImm InstLeft InstReversible LBREACKET MINUS NEWLINE OPCODE PLUS RBREACKET REG STRINGcode : code instruction\n                | code pointer\n                | code NEWLINE\n                | pointer\n                | instruction\n                | NEWLINEpointer : DOT ID NEWLINEexpression : IDexpression : INTEGERexpression : MINUS INTEGERexpression : expression PLUS expression\n                      | expression MINUS expressioninstruction : OPCODE operands NEWLINE\n                       | OPCODE NEWLINEinstruction : InstImm expression NEWLINEinstruction : InstReversible operand COMMA operand NEWLINEinstruction : InstLeft operand NEWLINEinstruction : InstClear NEWLINEoperand : REG\n                   | STRING\n                   | expression\n                   | LBREACKET REG RBREACKET\n                   | LBREACKET REG DOTS expression RBREACKET\n                   | LBREACKET expression DOTS REG RBREACKEToperands   : operands COMMA operand\n                      | operand'
-    
-_lr_action_items = {'NEWLINE':([0,1,2,3,4,6,10,11,12,13,14,15,16,17,18,19,20,22,23,25,27,28,29,30,36,37,39,40,41,42,43,46,49,50,51,],[4,13,-5,-4,-6,16,28,-1,-2,-3,29,30,-14,-26,-19,-20,-21,-8,-9,37,39,-18,-7,-13,-10,-15,-17,-25,-11,-12,-22,49,-16,-23,-24,]),'DOT':([0,1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[5,5,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'OPCODE':([0,1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[6,6,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'InstImm':([0,1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[7,7,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'InstReversible':([0,1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[8,8,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'InstLeft':([0,1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[9,9,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'InstClear':([0,1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[10,10,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'$end':([1,2,3,4,11,12,13,16,28,29,30,37,39,49,],[0,-5,-4,-6,-1,-2,-3,-14,-18,-7,-13,-15,-17,-16,]),'ID':([5,6,7,8,9,21,31,32,33,38,44,],[14,22,22,22,22,22,22,22,22,22,22,]),'REG':([6,8,9,21,31,38,45,],[18,18,18,34,18,18,48,]),'STRING':([6,8,9,31,38,],[19,19,19,19,19,]),'LBREACKET':([6,8,9,31,38,],[21,21,21,21,21,]),'INTEGER':([6,7,8,9,21,24,31,32,33,38,44,],[23,23,23,23,23,36,23,23,23,23,23,]),'MINUS':([6,7,8,9,20,21,22,23,25,31,32,33,35,36,38,41,42,44,47,],[24,24,24,24,33,24,-8,-9,33,24,24,24,33,-10,24,-11,-12,24,33,]),'COMMA':([15,17,18,19,20,22,23,26,36,40,41,42,43,50,51,],[31,-26,-19,-20,-21,-8,-9,38,-10,-25,-11,-12,-22,-23,-24,]),'PLUS':([20,22,23,25,35,36,41,42,47,],[32,-8,-9,32,32,-10,-11,-12,32,]),'DOTS':([22,23,34,35,36,41,42,],[-8,-9,44,45,-10,-11,-12,]),'RBREACKET':([22,23,34,36,41,42,47,48,],[-8,-9,43,-10,-11,-12,50,51,]),}
+_lr_signature = 'leftDOTleftMINUSPLUSCOMMA DOT DOTS ID INTEGER InstClear InstImm InstLeft InstReversible LBREACKET MINUS NEWLINE OpData OpDec OpInc OpTimes PLUS RBREACKET REG STRINGcode : code instruction\n                | code pointer\n                | code NEWLINE\n                | pointer\n                | instruction\n                | NEWLINEpointer : DOT ID NEWLINEexpression : IDexpression : INTEGERexpression : MINUS INTEGERexpression : expression PLUS expression\n                      | expression MINUS expressioninstruction : OpData operands NEWLINEinstruction : OpTimes operands NEWLINEinstruction : OpDec REG NEWLINEinstruction : OpInc REG NEWLINEinstruction : InstImm expression NEWLINEinstruction : InstReversible operand COMMA operand NEWLINEinstruction : InstLeft operand NEWLINEinstruction : InstClear NEWLINEoperand : REG\n                   | STRING\n                   | expression\n                   | LBREACKET REG RBREACKET\n                   | LBREACKET REG DOTS expression RBREACKET\n                   | LBREACKET expression DOTS REG RBREACKEToperands   : operands COMMA operand\n                      | operand'
+
+_lr_action_items = {'NEWLINE': (
+[0, 1, 2, 3, 4, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 27, 28, 29, 30, 32, 33, 34, 35, 41, 42, 43, 44, 45, 47,
+ 48, 49, 50, 51, 54, 57, 58, 59, ],
+[4, 16, -5, -4, -6, 33, -1, -2, -3, 34, 35, -28, -21, -22, -23, -8, -9, 42, 43, 44, 45, 47, -20, -7, -13, -10, -14, -15,
+ -16, -17, -19, -27, -11, -12, -24, 57, -18, -25, -26, ]), 'DOT': (
+[0, 1, 2, 3, 4, 14, 15, 16, 33, 34, 35, 42, 43, 44, 45, 47, 57, ],
+[5, 5, -5, -4, -6, -1, -2, -3, -20, -7, -13, -14, -15, -16, -17, -19, -18, ]), 'OpData': (
+[0, 1, 2, 3, 4, 14, 15, 16, 33, 34, 35, 42, 43, 44, 45, 47, 57, ],
+[6, 6, -5, -4, -6, -1, -2, -3, -20, -7, -13, -14, -15, -16, -17, -19, -18, ]), 'OpTimes': (
+[0, 1, 2, 3, 4, 14, 15, 16, 33, 34, 35, 42, 43, 44, 45, 47, 57, ],
+[7, 7, -5, -4, -6, -1, -2, -3, -20, -7, -13, -14, -15, -16, -17, -19, -18, ]), 'OpDec': (
+[0, 1, 2, 3, 4, 14, 15, 16, 33, 34, 35, 42, 43, 44, 45, 47, 57, ],
+[8, 8, -5, -4, -6, -1, -2, -3, -20, -7, -13, -14, -15, -16, -17, -19, -18, ]), 'OpInc': (
+[0, 1, 2, 3, 4, 14, 15, 16, 33, 34, 35, 42, 43, 44, 45, 47, 57, ],
+[9, 9, -5, -4, -6, -1, -2, -3, -20, -7, -13, -14, -15, -16, -17, -19, -18, ]), 'InstImm': (
+[0, 1, 2, 3, 4, 14, 15, 16, 33, 34, 35, 42, 43, 44, 45, 47, 57, ],
+[10, 10, -5, -4, -6, -1, -2, -3, -20, -7, -13, -14, -15, -16, -17, -19, -18, ]), 'InstReversible': (
+[0, 1, 2, 3, 4, 14, 15, 16, 33, 34, 35, 42, 43, 44, 45, 47, 57, ],
+[11, 11, -5, -4, -6, -1, -2, -3, -20, -7, -13, -14, -15, -16, -17, -19, -18, ]), 'InstLeft': (
+[0, 1, 2, 3, 4, 14, 15, 16, 33, 34, 35, 42, 43, 44, 45, 47, 57, ],
+[12, 12, -5, -4, -6, -1, -2, -3, -20, -7, -13, -14, -15, -16, -17, -19, -18, ]), 'InstClear': (
+[0, 1, 2, 3, 4, 14, 15, 16, 33, 34, 35, 42, 43, 44, 45, 47, 57, ],
+[13, 13, -5, -4, -6, -1, -2, -3, -20, -7, -13, -14, -15, -16, -17, -19, -18, ]), '$end': (
+[1, 2, 3, 4, 14, 15, 16, 33, 34, 35, 42, 43, 44, 45, 47, 57, ],
+[0, -5, -4, -6, -1, -2, -3, -20, -7, -13, -14, -15, -16, -17, -19, -18, ]), 'ID': (
+[5, 6, 7, 10, 11, 12, 23, 36, 37, 38, 46, 52, ], [17, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, ]),
+                    'REG': ([6, 7, 8, 9, 11, 12, 23, 36, 46, 53, ], [20, 20, 28, 29, 20, 20, 39, 20, 20, 56, ]),
+                    'STRING': ([6, 7, 11, 12, 36, 46, ], [21, 21, 21, 21, 21, 21, ]),
+                    'LBREACKET': ([6, 7, 11, 12, 36, 46, ], [23, 23, 23, 23, 23, 23, ]), 'INTEGER': (
+    [6, 7, 10, 11, 12, 23, 26, 36, 37, 38, 46, 52, ], [25, 25, 25, 25, 25, 25, 41, 25, 25, 25, 25, 25, ]), 'MINUS': (
+    [6, 7, 10, 11, 12, 22, 23, 24, 25, 30, 36, 37, 38, 40, 41, 46, 49, 50, 52, 55, ],
+    [26, 26, 26, 26, 26, 38, 26, -8, -9, 38, 26, 26, 26, 38, -10, 26, -11, -12, 26, 38, ]), 'COMMA': (
+    [18, 19, 20, 21, 22, 24, 25, 27, 31, 41, 48, 49, 50, 51, 58, 59, ],
+    [36, -28, -21, -22, -23, -8, -9, 36, 46, -10, -27, -11, -12, -24, -25, -26, ]),
+                    'PLUS': ([22, 24, 25, 30, 40, 41, 49, 50, 55, ], [37, -8, -9, 37, 37, -10, -11, -12, 37, ]),
+                    'DOTS': ([24, 25, 39, 40, 41, 49, 50, ], [-8, -9, 52, 53, -10, -11, -12, ]),
+                    'RBREACKET': ([24, 25, 39, 41, 49, 50, 55, 56, ], [-8, -9, 51, -10, -11, -12, 58, 59, ]), }
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +53,10 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'code':([0,],[1,]),'instruction':([0,1,],[2,11,]),'pointer':([0,1,],[3,12,]),'operands':([6,],[15,]),'operand':([6,8,9,31,38,],[17,26,27,40,46,]),'expression':([6,7,8,9,21,31,32,33,38,44,],[20,25,20,20,35,20,41,42,20,47,]),}
+_lr_goto_items = {'code': ([0, ], [1, ]), 'instruction': ([0, 1, ], [2, 14, ]), 'pointer': ([0, 1, ], [3, 15, ]),
+                  'operands': ([6, 7, ], [18, 27, ]), 'operand': ([6, 7, 11, 12, 36, 46, ], [19, 19, 31, 32, 48, 54, ]),
+                  'expression': (
+                  [6, 7, 10, 11, 12, 23, 36, 37, 38, 46, 52, ], [22, 22, 30, 22, 22, 40, 22, 49, 50, 22, 55, ]), }
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -29,28 +68,31 @@ _lr_productions = [
   ("S' -> code","S'",1,None,None,None),
   ('code -> code instruction','code',2,'p_code','parser.py',53),
   ('code -> code pointer','code',2,'p_code','parser.py',54),
-  ('code -> code NEWLINE','code',2,'p_code','parser.py',55),
-  ('code -> pointer','code',1,'p_code','parser.py',56),
-  ('code -> instruction','code',1,'p_code','parser.py',57),
-  ('code -> NEWLINE','code',1,'p_code','parser.py',58),
-  ('pointer -> DOT ID NEWLINE','pointer',3,'p_pointer','parser.py',74),
-  ('expression -> ID','expression',1,'p_expression_id','parser.py',79),
-  ('expression -> INTEGER','expression',1,'p_expression_int','parser.py',84),
-  ('expression -> MINUS INTEGER','expression',2,'p_expression_unary','parser.py',89),
-  ('expression -> expression PLUS expression','expression',3,'p_expression_bin','parser.py',97),
-  ('expression -> expression MINUS expression','expression',3,'p_expression_bin','parser.py',98),
-  ('instruction -> OPCODE operands NEWLINE','instruction',3,'p_instruction','parser.py',108),
-  ('instruction -> OPCODE NEWLINE','instruction',2,'p_instruction','parser.py',109),
-  ('instruction -> InstImm expression NEWLINE','instruction',3,'p_instruction_imm','parser.py',119),
-  ('instruction -> InstReversible operand COMMA operand NEWLINE','instruction',5,'p_instruction_rev','parser.py',124),
-  ('instruction -> InstLeft operand NEWLINE','instruction',3,'p_instruction_left','parser.py',129),
-  ('instruction -> InstClear NEWLINE','instruction',2,'p_instruction_clear','parser.py',134),
-  ('operand -> REG','operand',1,'p_operand','parser.py',139),
-  ('operand -> STRING','operand',1,'p_operand','parser.py',140),
-  ('operand -> expression','operand',1,'p_operand','parser.py',141),
-  ('operand -> LBREACKET REG RBREACKET','operand',3,'p_operand','parser.py',142),
-  ('operand -> LBREACKET REG DOTS expression RBREACKET','operand',5,'p_operand','parser.py',143),
-  ('operand -> LBREACKET expression DOTS REG RBREACKET','operand',5,'p_operand','parser.py',144),
-  ('operands -> operands COMMA operand','operands',3,'p_operands','parser.py',167),
-  ('operands -> operand','operands',1,'p_operands','parser.py',168),
+    ('code -> code NEWLINE', 'code', 2, 'p_code', 'parser.py', 55),
+    ('code -> pointer', 'code', 1, 'p_code', 'parser.py', 56),
+    ('code -> instruction', 'code', 1, 'p_code', 'parser.py', 57),
+    ('code -> NEWLINE', 'code', 1, 'p_code', 'parser.py', 58),
+    ('pointer -> DOT ID NEWLINE', 'pointer', 3, 'p_pointer', 'parser.py', 74),
+    ('expression -> ID', 'expression', 1, 'p_expression_id', 'parser.py', 79),
+    ('expression -> INTEGER', 'expression', 1, 'p_expression_int', 'parser.py', 84),
+    ('expression -> MINUS INTEGER', 'expression', 2, 'p_expression_unary', 'parser.py', 89),
+    ('expression -> expression PLUS expression', 'expression', 3, 'p_expression_bin', 'parser.py', 97),
+    ('expression -> expression MINUS expression', 'expression', 3, 'p_expression_bin', 'parser.py', 98),
+    ('instruction -> OpData operands NEWLINE', 'instruction', 3, 'p_instruction_data', 'parser.py', 108),
+    ('instruction -> OpTimes operands NEWLINE', 'instruction', 3, 'p_instruction_times', 'parser.py', 113),
+    ('instruction -> OpDec REG NEWLINE', 'instruction', 3, 'p_instruction_inc', 'parser.py', 118),
+    ('instruction -> OpInc REG NEWLINE', 'instruction', 3, 'p_instruction_dec', 'parser.py', 123),
+    ('instruction -> InstImm expression NEWLINE', 'instruction', 3, 'p_instruction_imm', 'parser.py', 128),
+    ('instruction -> InstReversible operand COMMA operand NEWLINE', 'instruction', 5, 'p_instruction_rev', 'parser.py',
+     133),
+    ('instruction -> InstLeft operand NEWLINE', 'instruction', 3, 'p_instruction_left', 'parser.py', 138),
+    ('instruction -> InstClear NEWLINE', 'instruction', 2, 'p_instruction_clear', 'parser.py', 143),
+    ('operand -> REG', 'operand', 1, 'p_operand', 'parser.py', 148),
+    ('operand -> STRING', 'operand', 1, 'p_operand', 'parser.py', 149),
+    ('operand -> expression', 'operand', 1, 'p_operand', 'parser.py', 150),
+    ('operand -> LBREACKET REG RBREACKET', 'operand', 3, 'p_operand', 'parser.py', 151),
+    ('operand -> LBREACKET REG DOTS expression RBREACKET', 'operand', 5, 'p_operand', 'parser.py', 152),
+    ('operand -> LBREACKET expression DOTS REG RBREACKET', 'operand', 5, 'p_operand', 'parser.py', 153),
+    ('operands -> operands COMMA operand', 'operands', 3, 'p_operands', 'parser.py', 176),
+    ('operands -> operand', 'operands', 1, 'p_operands', 'parser.py', 177),
 ]

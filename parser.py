@@ -2,7 +2,7 @@ from typing import List, Union, Dict
 
 from ply import *
 
-from instructions import EnumInstruction, BaseInstruction
+from instructions import BaseInstruction
 from lexer import Lexer
 from modrm import Address, AddressDisp
 from regs import Reg
@@ -20,16 +20,6 @@ class Pointer:
 
     def __repr__(self):
         return f"Pointer({self.name}): {self.line}"
-
-
-class Inst:
-    def __init__(self, name: EnumInstruction, args: list, line: int):
-        self.type: EnumInstruction = name
-        self.args = args
-        self.line: int = line
-
-    def __repr__(self):
-        return f"{self.type.name}{repr(tuple(self.args))}: {self.line}"
 
 
 id_dict: Dict[str, int] = NedoDict()
@@ -105,15 +95,24 @@ class Parser:
             raise Exception
 
     @staticmethod
-    def p_instruction(p):
-        """instruction : OPCODE operands NEWLINE
-                       | OPCODE NEWLINE"""
-        if len(p) == 4:
-            p[0] = p[1].value(p[2], p.slice[1].lineno)
-        elif len(p) == 3:
-            p[0] = p[1].value([], p.slice[1].lineno)
-        else:
-            raise Exception
+    def p_instruction_data(p):
+        """instruction : OpData operands NEWLINE"""
+        p[0] = p[1](p[2], p.slice[1].lineno)
+
+    @staticmethod
+    def p_instruction_times(p):
+        """instruction : OpTimes operands NEWLINE"""
+        p[0] = p[1](p[2], p.slice[1].lineno)
+
+    @staticmethod
+    def p_instruction_inc(p):
+        """instruction : OpDec REG NEWLINE"""
+        p[0] = p[1]([p[2]], p.slice[1].lineno)
+
+    @staticmethod
+    def p_instruction_dec(p):
+        """instruction : OpInc REG NEWLINE"""
+        p[0] = p[1]([p[2]], p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_imm(p):

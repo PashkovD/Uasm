@@ -1,14 +1,16 @@
 from ply import *
 
-from instructions import EnumInstruction, EnumInstImm, EnumInstReversible, EnumInstLeft, EnumInstClear
+from instructions import EnumInstImm, EnumInstReversible, EnumInstLeft, EnumInstClear, InstData, \
+    InstTIMES, InstINC, InstDEC
 from regs import Reg
 
 
 class Lexer:
     tokens = (
         'PLUS', 'MINUS', 'RBREACKET', 'LBREACKET',
-        'COMMA', 'DOT', 'DOTS', 'INTEGER', 'STRING', 'REG', 'OPCODE',
+        'COMMA', 'DOT', 'DOTS', 'INTEGER', 'STRING', 'REG',
         'InstImm', 'InstReversible', 'InstLeft', 'InstClear',
+        'OpData', 'OpTimes', 'OpInc', 'OpDec',
         'ID', 'NEWLINE'
     )
 
@@ -42,12 +44,26 @@ class Lexer:
             return t
         except KeyError:
             ...
-        try:
-            t.value = EnumInstruction[t.value.upper()]
-            t.type = 'OPCODE'
+
+        if t.value.upper() == "DATA":
+            t.value = InstData
+            t.type = 'OpData'
             return t
-        except KeyError:
-            ...
+
+        if t.value.upper() == "Times":
+            t.value = InstTIMES
+            t.type = 'OpTimes'
+            return t
+
+        if t.value.upper() == "INC":
+            t.value = InstINC
+            t.type = 'OpInc'
+            return t
+
+        if t.value.upper() == "DEC":
+            t.value = InstDEC
+            t.type = 'OpDec'
+            return t
 
         try:
             t.value = EnumInstImm[t.value.upper()]

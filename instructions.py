@@ -140,13 +140,6 @@ class BaseInstClear(BaseInstruction):
         return self.clear_opcode(self.line)
 
 
-class EnumInstruction(Enum):
-    INC = InstINC
-    DEC = InstDEC
-    TIMES = InstTIMES
-    DATA = InstData
-
-
 class EnumInstLeft(Enum):
     @staticmethod
     def new(left_opcode_: Type[ModRMOpcode]) -> Type[BaseInstLeft]:
