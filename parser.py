@@ -166,7 +166,7 @@ class Parser:
                    | expression
                    | LBREACKET REG RBREACKET
                    | LBREACKET REG DOTS expression RBREACKET
-                   | LBREACKET expression DOTS REG RBREACKET"""
+                   | LBREACKET expression DOTS REG """
         if len(p) == 4:
             p[0] = Address(p[2])
         elif len(p) == 6:
@@ -186,16 +186,6 @@ class Parser:
             p[0] = p[1]
         else:
             raise Exception
-
-    @staticmethod
-    def p_operands(p):
-        """operands   : operands COMMA operand
-                      | operand"""
-        if len(p) > 3:
-            p[0] = p[1]
-            p[0].append(p[3])
-        else:
-            p[0] = [p[1]]
 
     @staticmethod
     def p_data_operand(p):
