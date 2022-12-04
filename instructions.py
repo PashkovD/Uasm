@@ -1,3 +1,5 @@
+from typing import Union
+
 from modrm import AddressDisp, Address, DispRM, RegRM, AtRegRM, AtRegDispRM
 from opcodes import *
 from regs import Reg
@@ -126,21 +128,19 @@ class BaseInstIMM(BaseInstruction):
 class BaseInstLeft(BaseInstruction):
     left_opcode: Type[ModRMOpcode]
 
-    def __init__(self, args: list, line: int):
-        self.args = args
+    def __init__(self, arg: Union[Reg, int, Address, AddressDisp], line: int):
+        self.arg = arg
         super().__init__(line)
 
     def process(self) -> ModRMOpcode:
-        if len(self.args) != 1:
-            raise Exception(f"{self.line}: Incorrect number of args: {len(self.args)}")
-        if isinstance(self.args[0], Reg):
-            mod_rm = RegRM(self.args[0], Reg.AX)
-        elif isinstance(self.args[0], int):
-            mod_rm = DispRM(self.args[0], Reg.AX)
-        elif isinstance(self.args[0], Address):
-            mod_rm = AtRegRM(self.args[0], Reg.AX)
-        elif isinstance(self.args[0], AddressDisp):
-            mod_rm = AtRegDispRM(self.args[0], Reg.AX)
+        if isinstance(self.arg, Reg):
+            mod_rm = RegRM(self.arg, Reg.AX)
+        elif isinstance(self.arg, int):
+            mod_rm = DispRM(self.arg, Reg.AX)
+        elif isinstance(self.arg, Address):
+            mod_rm = AtRegRM(self.arg, Reg.AX)
+        elif isinstance(self.arg, AddressDisp):
+            mod_rm = AtRegDispRM(self.arg, Reg.AX)
         else:
             raise Exception
         return self.left_opcode(self.line, mod_rm)
