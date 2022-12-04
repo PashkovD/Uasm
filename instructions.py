@@ -35,23 +35,6 @@ class InstData(BaseInstruction):
         return OpDATA(self.line, line)
 
 
-class InstTIMES(BaseInstruction):
-    @typechecked
-    def __init__(self, args: List[Union[str, int]], num: int, line: int):
-        self.num = num
-        self.args = args
-        super().__init__(line)
-
-    def process(self) -> BaseOpcode:
-        line: bytes = bytes()
-        for i in self.args:
-            if isinstance(i, str):
-                line += bytes(i, "utf-8")
-                continue
-            line += bytes((i,))
-        return OpDATA(self.line, line * self.num)
-
-
 class InstINC(BaseInstruction):
     @typechecked
     def __init__(self, reg: Reg, line: int):

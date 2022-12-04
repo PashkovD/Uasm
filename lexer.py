@@ -1,7 +1,7 @@
 from ply import *
 
 from instructions import EnumInstImm, EnumInstReversible, EnumInstLeft, EnumInstClear, InstData, \
-    InstTIMES, InstINC, InstDEC
+    InstINC, InstDEC
 from regs import Reg
 
 
@@ -51,7 +51,7 @@ class Lexer:
             return t
 
         if t.value.upper() == "Times":
-            t.value = InstTIMES
+            t.value = InstData
             t.type = 'OpTimes'
             return t
 

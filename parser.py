@@ -101,7 +101,7 @@ class Parser:
     @staticmethod
     def p_instruction_times(p):
         """instruction : OpTimes expression COMMA data_operands NEWLINE"""
-        p[0] = p[1](p[2], p.slice[1].lineno)
+        p[0] = p[1](p[4] * p[2], p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_inc(p):
