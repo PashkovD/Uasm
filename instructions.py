@@ -50,6 +50,7 @@ class InstTIMES(BaseInstruction):
 
 
 class InstINC(BaseInstruction):
+    @static_typing
     def __init__(self, reg: Reg, line: int):
         self.reg: Reg = reg
         super().__init__(line)
@@ -59,6 +60,7 @@ class InstINC(BaseInstruction):
 
 
 class InstDEC(BaseInstruction):
+    @static_typing
     def __init__(self, reg: Reg, line: int):
         self.reg: Reg = reg
         super().__init__(line)
@@ -71,6 +73,7 @@ class BaseInstReversible(BaseInstruction):
     normal_opcode: Type[ModRMOpcode]
     reverse_opcode: Type[ModRMOpcode]
 
+    @static_typing
     def __init__(self, left: Union[Reg, int, Address, AddressDisp], right: Reg, is_reversed: bool, line: int):
         self.left = left
         self.right = right
@@ -96,6 +99,7 @@ class BaseInstReversible(BaseInstruction):
 class BaseInstIMM(BaseInstruction):
     imm_opcode: Type[IMMOpcode]
 
+    @static_typing
     def __init__(self, num: int, line: int):
         self.num: int = num
         super().__init__(line)
@@ -107,6 +111,7 @@ class BaseInstIMM(BaseInstruction):
 class BaseInstLeft(BaseInstruction):
     left_opcode: Type[ModRMOpcode]
 
+    @static_typing
     def __init__(self, arg: Union[Reg, int, Address, AddressDisp], line: int):
         self.arg = arg
         super().__init__(line)
@@ -128,6 +133,7 @@ class BaseInstLeft(BaseInstruction):
 class BaseInstClear(BaseInstruction):
     clear_opcode: Type[BaseOpcode]
 
+    @static_typing
     def __init__(self, args: list, line: int):
         self.args = args
         super().__init__(line)
