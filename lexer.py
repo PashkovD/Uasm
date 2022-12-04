@@ -1,7 +1,6 @@
 from ply import *
 
-from instructions import EnumInstImm, EnumInstReversible, EnumInstLeft, EnumInstClear, InstData, \
-    InstINC, InstDEC
+from instructions import EnumInstImm, EnumInstReversible, EnumInstLeft, EnumInstClear, InstData
 from regs import Reg
 
 
@@ -56,12 +55,12 @@ class Lexer:
             return t
 
         if t.value.upper() == "INC":
-            t.value = InstINC
+            t.value = EnumInstReversible.ADD
             t.type = 'OpInc'
             return t
 
         if t.value.upper() == "DEC":
-            t.value = InstDEC
+            t.value = EnumInstReversible.SUB
             t.type = 'OpDec'
             return t
 

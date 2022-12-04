@@ -35,26 +35,6 @@ class InstData(BaseInstruction):
         return OpDATA(self.line, line)
 
 
-class InstINC(BaseInstruction):
-    @typechecked
-    def __init__(self, reg: Reg, line: int):
-        self.reg: Reg = reg
-        super().__init__(line)
-
-    def process(self) -> BaseOpcode:
-        return OpADDR(self.line, DispRM(1, self.reg))
-
-
-class InstDEC(BaseInstruction):
-    @typechecked
-    def __init__(self, reg: Reg, line: int):
-        self.reg: Reg = reg
-        super().__init__(line)
-
-    def process(self) -> BaseOpcode:
-        return OpSUBR(self.line, DispRM(1, self.reg))
-
-
 class BaseInstReversible(BaseInstruction):
     normal_opcode: Type[ModRMOpcode]
     reverse_opcode: Type[ModRMOpcode]
