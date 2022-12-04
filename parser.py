@@ -136,7 +136,10 @@ class Parser:
 
     @staticmethod
     def p_instruction_left(p):
-        """instruction : InstLeft operand NEWLINE"""
+        """instruction : InstLeft expression NEWLINE
+                       | InstLeft REG NEWLINE
+                       | InstLeft addr NEWLINE
+                       | InstLeft addr_disp NEWLINE"""
         p[0] = p[1].value(p[2], p.slice[1].lineno)
 
     @staticmethod
