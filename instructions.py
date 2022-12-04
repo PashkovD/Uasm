@@ -4,18 +4,21 @@ from regs import Reg
 
 
 class BaseInstruction:
-    def __init__(self, args: list, line: int):
-        self.args = args
+    def __init__(self, line: int):
         self.line: int = line
 
     def __repr__(self):
-        return f"{type(self).__name__}{repr(tuple(self.args))}: {self.line}"
+        return f"{self.line}: {type(self).__name__}"
 
     def process(self) -> BaseOpcode:
         pass
 
 
 class InstData(BaseInstruction):
+    def __init__(self, args: list, line: int):
+        self.args = args
+        super().__init__(line)
+
     def process(self) -> BaseOpcode:
         if len(self.args) < 1:
             raise Exception(f"{self.line}: less one Data args")
@@ -33,6 +36,10 @@ class InstData(BaseInstruction):
 
 
 class InstTIMES(BaseInstruction):
+    def __init__(self, args: list, line: int):
+        self.args = args
+        super().__init__(line)
+
     def process(self) -> BaseOpcode:
         if len(self.args) < 2:
             raise Exception(f"{self.line}: Too few TIMES args: {len(self.args)}")
@@ -52,6 +59,10 @@ class InstTIMES(BaseInstruction):
 
 
 class InstINC(BaseInstruction):
+    def __init__(self, args: list, line: int):
+        self.args = args
+        super().__init__(line)
+
     def process(self) -> BaseOpcode:
         if len(self.args) < 1:
             raise Exception(f"{self.line}: Too few INC args: {len(self.args)}")
@@ -61,6 +72,10 @@ class InstINC(BaseInstruction):
 
 
 class InstDEC(BaseInstruction):
+    def __init__(self, args: list, line: int):
+        self.args = args
+        super().__init__(line)
+
     def process(self) -> BaseOpcode:
         if len(self.args) < 1:
             raise Exception(f"{self.line}: Too few DEC args: {len(self.args)}")
@@ -72,6 +87,10 @@ class InstDEC(BaseInstruction):
 class BaseInstReversible(BaseInstruction):
     normal: Type[ModRMOpcode]
     reverse: Type[ModRMOpcode]
+
+    def __init__(self, args: list, line: int):
+        self.args = args
+        super().__init__(line)
 
     def process(self) -> ModRMOpcode:
         if len(self.args) != 2:
@@ -104,6 +123,10 @@ class BaseInstReversible(BaseInstruction):
 class BaseInstIMM(BaseInstruction):
     imm_opcode: Type[IMMOpcode]
 
+    def __init__(self, args: list, line: int):
+        self.args = args
+        super().__init__(line)
+
     def process(self) -> IMMOpcode:
         if len(self.args) != 1:
             raise Exception(f"{self.line}: Incorrect number of args: {len(self.args)}")
@@ -114,6 +137,10 @@ class BaseInstIMM(BaseInstruction):
 
 class BaseInstLeft(BaseInstruction):
     left_opcode: Type[ModRMOpcode]
+
+    def __init__(self, args: list, line: int):
+        self.args = args
+        super().__init__(line)
 
     def process(self) -> ModRMOpcode:
         if len(self.args) != 1:
@@ -133,6 +160,10 @@ class BaseInstLeft(BaseInstruction):
 
 class BaseInstClear(BaseInstruction):
     clear_opcode: Type[BaseOpcode]
+
+    def __init__(self, args: list, line: int):
+        self.args = args
+        super().__init__(line)
 
     def process(self) -> BaseOpcode:
         if len(self.args) != 0:
