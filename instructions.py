@@ -136,14 +136,7 @@ class BaseInstLeft(BaseInstruction):
 class BaseInstClear(BaseInstruction):
     clear_opcode: Type[BaseOpcode]
 
-    @typechecked
-    def __init__(self, args: list, line: int):
-        self.args = args
-        super().__init__(line)
-
     def process(self) -> BaseOpcode:
-        if len(self.args) != 0:
-            raise Exception(f"{self.line}: Incorrect number of args: {len(self.args)}")
         return self.clear_opcode(self.line)
 
 
