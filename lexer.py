@@ -29,9 +29,6 @@ class Lexer:
     def t_STRING(t):
         r'\".*?\"'
         t.value = t.value[1:-1]
-        if len(t.value) == 1:
-            t.value = ord(t.value)
-            t.type = 'INTEGER'
         return t
 
     @staticmethod
@@ -94,6 +91,13 @@ class Lexer:
     def t_INTEGER(t):
         r'\d+'
         t.value = int(t.value)
+        return t
+
+    @staticmethod
+    def t_INTEGER_char(t):
+        r"'.'"
+        t.value = ord(t.value[1])
+        t.type = "INTEGER"
         return t
 
     @staticmethod
