@@ -39,25 +39,21 @@ class Parser:
         return self.parser.parse(input_, **kwargs)
 
     @staticmethod
-    def p_code(p: yacc.YaccProduction):
+    def p_code_start(p):
+        """code : """
+        p[0] = []
+
+    @staticmethod
+    def p_code_newline(p):
+        """code : code NEWLINE"""
+        p[0] = p[1]
+
+    @staticmethod
+    def p_code(p):
         """code : code instruction
-                | code pointer
-                | code NEWLINE
-                | pointer
-                | instruction
-                | NEWLINE"""
-        if len(p) == 3:
-            if not isinstance(p[1], list):
-                p[1] = []
-            p[0] = p[1]
-            if p.slice[2].type != "NEWLINE":
-                p[0].append(p[2])
-        elif len(p) == 2 and p.slice[1].type == "NEWLINE":
-            pass
-        elif len(p) == 2:
-            p[0] = [p[1]]
-        else:
-            raise Exception
+                | code pointer"""
+        p[0] = p[1]
+        p[0].append(p[2])
 
     @staticmethod
     def p_pointer(p):
