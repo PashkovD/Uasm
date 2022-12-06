@@ -1,6 +1,8 @@
 from enum import Enum
-from typing import Dict, Type
 
+from typeguard import typechecked
+
+from machine_file import MachineFile
 from modrm import BaseModRM
 
 
@@ -54,8 +56,9 @@ class BaseOpcode:
     def __repr__(self):
         return f"{type(self).__name__}()"
 
-    def serialize(self) -> bytes:
-        return bytes((self.opcode.value,))
+    @typechecked
+    def serialize(self, file: MachineFile) -> None:
+        file.write(bytes((self.opcode.value,)))
 
 
 class OpDATA(BaseOpcode):
@@ -66,8 +69,9 @@ class OpDATA(BaseOpcode):
         self.data: bytes = data
         self.line: int = line
 
-    def serialize(self) -> bytes:
-        return self.data
+    @typechecked
+    def serialize(self, file: MachineFile) -> None:
+        file.write(self.data)
 
     @property
     def size(self) -> int:
@@ -89,8 +93,9 @@ class ModRMOpcode(BaseOpcode):
     def __repr__(self):
         return f"{type(self).__name__}({str(self.modrm)})"
 
-    def serialize(self) -> bytes:
-        return bytes((self.opcode.value,)) + self.modrm.serialize()
+    @typechecked
+    def serialize(self, file: MachineFile) -> None:
+        file.write(bytes((self.opcode.value,)) + self.modrm.serialize())
 
 
 class IMMOpcode(BaseOpcode):
@@ -109,8 +114,9 @@ class IMMOpcode(BaseOpcode):
     def __repr__(self):
         return f"{type(self).__name__}({str(self.imm)})"
 
-    def serialize(self) -> bytes:
-        return bytes((self.opcode.value, self.imm))
+    @typechecked
+    def serialize(self, file: MachineFile) -> None:
+        file.write(bytes((self.opcode.value, self.imm)))
 
 
 class OpADD(ModRMOpcode):

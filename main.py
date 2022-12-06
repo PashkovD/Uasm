@@ -1,8 +1,8 @@
 from typing import Iterable
 
-
-from parser import parse, Pointer
 import parser
+from machine_file import MachineFile
+from parser import parse, Pointer
 
 text2: str = """
     mov sp, stack
@@ -112,25 +112,25 @@ def main():
     result = parse(text2)
     if result is None:
         raise Exception
-    data = bytearray()
+    data = MachineFile()
     data2 = {}
     for i in result:
         if isinstance(i, Pointer):
-            data2[i.name] = len(data)
+            data2[i.name] = data.current_pos
             continue
-        data.extend(i.process().serialize())
+        i.process().serialize(data)
     parser.id_dict = data2
     result = parse(text2)
-    data = bytearray()
+    data = MachineFile()
     for i in result:
         if isinstance(i, Pointer):
             continue
-        data.extend(i.process().serialize())
+        i.process().serialize(data)
     print(data2)
-    print(" ".join(hex(i)[2:] for i in data))
-    print(", ".join(map(str, data)))
-    print(decorate(data))
-    print(len(data))
+    print(" ".join(hex(i)[2:] for i in data.data))
+    print(", ".join(map(str, data.data)))
+    print(decorate(data.data))
+    print(len(data.data))
 
 
 if __name__ == "__main__":
