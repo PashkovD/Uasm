@@ -1,15 +1,11 @@
-from typing import List, Union, Dict
+from typing import List, Union
 
-from ply import *
+from ply import yacc
 
 from instructions import BaseInstruction
 from lexer import Lexer
 from modrm import Address, AddressDisp
-
-
-class NedoDict(dict):
-    def __getitem__(self, item: str) -> int:
-        return 255
+from not_int import NotInt
 
 
 class Pointer:
@@ -19,9 +15,6 @@ class Pointer:
 
     def __repr__(self):
         return f"Pointer({self.name}): {self.line}"
-
-
-id_dict: Dict[str, int] = NedoDict()
 
 
 class Parser:
@@ -63,12 +56,12 @@ class Parser:
     @staticmethod
     def p_expression_id(p):
         """expression : ID"""
-        p[0] = id_dict[p[1]]
+        p[0] = NotInt(0, {p[1]: 1})
 
     @staticmethod
     def p_expression_int(p):
         """expression : INTEGER"""
-        p[0] = p[1]
+        p[0] = NotInt(p[1])
 
     @staticmethod
     def p_expression_unary(p):
@@ -102,12 +95,12 @@ class Parser:
     @staticmethod
     def p_instruction_inc(p):
         """instruction : OpDec REG NEWLINE"""
-        p[0] = p[1].value(1, p[2], is_reversed=True, line=p.slice[1].lineno)
+        p[0] = p[1].value(NotInt(1), p[2], is_reversed=True, line=p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_dec(p):
         """instruction : OpInc REG NEWLINE"""
-        p[0] = p[1].value(1, p[2], is_reversed=True, line=p.slice[1].lineno)
+        p[0] = p[1].value(NotInt(1), p[2], is_reversed=True, line=p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_imm(p):

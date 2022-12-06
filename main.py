@@ -1,6 +1,5 @@
 from typing import Iterable
 
-import parser
 from machine_file import MachineFile
 from parser import parse, Pointer
 
@@ -100,6 +99,7 @@ text2: str = """
 .stack
 """
 
+
 def decorate(data: Iterable[int]) -> str:
     data2 = ""
     codes = "0123456789ABCDEF"
@@ -110,23 +110,14 @@ def decorate(data: Iterable[int]) -> str:
 
 def main():
     result = parse(text2)
-    if result is None:
-        raise Exception
-    data = MachineFile()
-    data2 = {}
-    for i in result:
-        if isinstance(i, Pointer):
-            data2[i.name] = data.current_pos
-            continue
-        i.process().serialize(data)
-    parser.id_dict = data2
-    result = parse(text2)
     data = MachineFile()
     for i in result:
         if isinstance(i, Pointer):
+            data.symbols[i.name] = data.current_pos
             continue
         i.process().serialize(data)
-    print(data2)
+    data.apply_relocations()
+    print(data.symbols)
     print(" ".join(hex(i)[2:] for i in data.data))
     print(", ".join(map(str, data.data)))
     print(decorate(data.data))

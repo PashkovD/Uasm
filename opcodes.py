@@ -1,9 +1,11 @@
 from enum import Enum
+from typing import List
 
 from typeguard import typechecked
 
 from machine_file import MachineFile
 from modrm import BaseModRM
+from not_int import NotInt
 
 
 class Opcode(int, Enum):
@@ -43,6 +45,7 @@ class Opcode(int, Enum):
 class BaseOpcode:
     opcode: Opcode
 
+    @typechecked
     def __init__(self, line: int):
         self.line: int = line
 
@@ -64,14 +67,15 @@ class BaseOpcode:
 class OpDATA(BaseOpcode):
     opcode = Opcode.DATA
 
-    def __init__(self, line: int, data: bytes):
+    @typechecked
+    def __init__(self, line: int, data: List[NotInt]):
         super().__init__(line)
-        self.data: bytes = data
-        self.line: int = line
+        self.data: List[NotInt] = data
 
     @typechecked
     def serialize(self, file: MachineFile) -> None:
-        file.write(self.data)
+        for i in self.data:
+            file.write_int(i)
 
     @property
     def size(self) -> int:
@@ -79,13 +83,10 @@ class OpDATA(BaseOpcode):
 
 
 class ModRMOpcode(BaseOpcode):
+    @typechecked
     def __init__(self, line: int, modrm: BaseModRM):
         super().__init__(line)
         self.modrm: BaseModRM = modrm
-
-    @property
-    def size(self) -> int:
-        return 2
 
     def __str__(self):
         return f"{self.opcode.name} {str(self.modrm)}"
@@ -95,18 +96,15 @@ class ModRMOpcode(BaseOpcode):
 
     @typechecked
     def serialize(self, file: MachineFile) -> None:
-        file.write(bytes((self.opcode.value,)) + self.modrm.serialize())
+        file.write(bytes((self.opcode.value,)))
+        self.modrm.serialize(file)
 
 
 class IMMOpcode(BaseOpcode):
-    def __init__(self, line: int, imm: int):
+    @typechecked
+    def __init__(self, line: int, imm: NotInt):
         super().__init__(line)
-        assert imm in range(256)
-        self.imm: int = imm
-
-    @property
-    def size(self) -> int:
-        return 2
+        self.imm: NotInt = imm
 
     def __str__(self):
         return f"{self.opcode.name} {str(self.imm)}"
@@ -116,7 +114,8 @@ class IMMOpcode(BaseOpcode):
 
     @typechecked
     def serialize(self, file: MachineFile) -> None:
-        file.write(bytes((self.opcode.value, self.imm)))
+        file.write(bytes((self.opcode.value,)))
+        file.write_int(self.imm)
 
 
 class OpADD(ModRMOpcode):
@@ -236,8 +235,7 @@ class OpXORR(ModRMOpcode):
 
 
 class OpNOT(ModRMOpcode):
-     opcode = Opcode.NOT
-
+    opcode = Opcode.NOT
 
 # op_cls: Dict[Opcode, Type[BaseOpcode]] = {
 #     OpDATA.opcode: OpDATA,

@@ -1,12 +1,15 @@
 from enum import Enum
-from typing import Union, Dict
 
+from typeguard import typechecked
+
+from machine_file import MachineFile
+from not_int import NotInt
 from regs import Reg
 
 
 class Address:
+    @typechecked
     def __init__(self, reg: Reg):
-        assert reg in Reg
         self.reg: Reg = reg
 
     def __repr__(self):
@@ -14,9 +17,9 @@ class Address:
 
 
 class AddressDisp:
-    def __init__(self, reg: Reg, disp: int):
-        assert reg in Reg
-        self.disp: int = (disp % 256 + 256) % 256
+    @typechecked
+    def __init__(self, reg: Reg, disp: NotInt):
+        self.disp = disp
         self.reg: Reg = reg
 
     def __repr__(self):
@@ -34,11 +37,13 @@ class BaseModRM:
     size: int
     mod: ModRMMod
 
+    @typechecked
     def __init__(self, r_reg: Reg):
         assert r_reg in Reg
         self.r_reg: Reg = r_reg
 
-    def serialize(self) -> bytes:
+    @typechecked
+    def serialize(self, file: MachineFile) -> None:
         raise Exception
 
     def __repr__(self) -> str:
@@ -49,13 +54,15 @@ class RegRM(BaseModRM):
     size = 1
     mod = ModRMMod.reg
 
+    @typechecked
     def __init__(self, l_reg: Reg, r_reg: Reg):
         super().__init__(r_reg)
         assert l_reg in Reg
         self.l_reg: Reg = l_reg
 
-    def serialize(self) -> bytes:
-        return bytes(((self.mod << 6) + (self.l_reg.value << 3) + self.r_reg.value,))
+    @typechecked
+    def serialize(self, file: MachineFile) -> None:
+        file.write(bytes(((self.mod << 6) + (self.l_reg.value << 3) + self.r_reg.value,)))
 
     def __str__(self) -> str:
         return f"{self.l_reg.value}, {self.r_reg.name}"
@@ -65,45 +72,50 @@ class AtRegRM(BaseModRM):
     size = 1
     mod = ModRMMod.at_reg
 
+    @typechecked
     def __init__(self, address: Address, r_reg: Reg):
         super().__init__(r_reg)
-        assert address.reg in Reg
-        self.l_reg: Reg = address.reg
+        self.address = address
 
-    def serialize(self) -> bytes:
-        return bytes(((self.mod.value << 6) + (self.l_reg.value << 3) + self.r_reg.value,))
+    @typechecked
+    def serialize(self, file: MachineFile) -> None:
+        file.write(bytes(((self.mod.value << 6) + (self.address.reg.value << 3) + self.r_reg.value,)))
 
     def __str__(self) -> str:
-        return f"[{self.l_reg.value}], {self.r_reg.name}"
+        return f"[{self.address.reg}], {self.r_reg.name}"
 
 
 class AtRegDispRM(BaseModRM):
     size = 2
     mod = ModRMMod.at_reg_disp
 
+    @typechecked
     def __init__(self, address: AddressDisp, r_reg: Reg):
         super().__init__(r_reg)
-        assert address.reg in Reg
-        self.disp: int = (address.disp % 256 + 256) % 256
-        self.l_reg: Reg = address.reg
+        self.left = address
 
     def __str__(self) -> str:
-        return f"[{self.l_reg.name} + {self.disp}], {self.r_reg.name}"
+        return f"[{self.left.reg.name} + {self.left.disp}], {self.r_reg.name}"
 
-    def serialize(self) -> bytes:
-        return bytes(((self.mod << 6) + (self.l_reg.value << 3) + self.r_reg.value, self.disp))
+    @typechecked
+    def serialize(self, file: MachineFile) -> None:
+        file.write(bytes(((self.mod << 6) + (self.left.reg.value << 3) + self.r_reg.value,)))
+        file.write_int(self.left.disp)
 
 
 class DispRM(BaseModRM):
     size = 2
     mod = ModRMMod.disp
 
-    def __init__(self, disp: int, r_reg: Reg):
+    @typechecked
+    def __init__(self, disp: NotInt, r_reg: Reg):
         super().__init__(r_reg)
-        self.disp: int = (disp % 256 + 256) % 256
+        self.disp = disp
 
-    def serialize(self) -> bytes:
-        return bytes(((self.mod << 6) + self.r_reg.value, self.disp))
+    @typechecked
+    def serialize(self, file: MachineFile) -> None:
+        file.write(bytes(((self.mod << 6) + self.r_reg.value,)))
+        file.write_int(self.disp)
 
     def __str__(self) -> str:
         return f"{self.disp}, {self.r_reg.name}"
