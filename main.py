@@ -1,115 +1,14 @@
-from typing import Iterable
+import sys
+from argparse import ArgumentParser
+from pathlib import PurePosixPath
+from typing import List
 
 from machine_file import MachineFile
 from parser import parse, Pointer
 
-text2: str = """
-    mov sp, stack
-    jmp start
 
-
-.print_num
-    push ax
-    push bx
-
-    mov bx, ax
-    shl bx, 4
-    shr bx, 4
-    mov bx, [table:bx]
-    mov [cx:num+1], bx 
-    
-    shr ax, 4
-    mov bx, [table:ax]
-    mov [cx:num], bx 
-    
-    mov ax, num
-    mov [cx:255], ax
-
-    pop bx
-    pop ax
-    ret
-  .num
-    data "00", 0
-  .table
-    data "0123456789ABCDEF"
-
-
-.print_fizz
-    push ax
-    mov ax, fizz
-    mov [cx:255],ax
-    pop ax
-    ret
-  .fizz
-    data "FIZZ", 0
-
-
-.print_buzz
-    push ax
-    mov ax, buzz
-    mov [cx:255],ax
-    pop ax
-    ret
-  .buzz
-    data "BUZZ", 0
-
-
-.print_fizzbuzz
-    push ax
-    mov ax, fizzbuzz
-    mov [cx:255],ax
-    pop ax
-    ret
-  .fizzbuzz
-    data "FIZZBUZZ", 0
-
-.start
-    inc ax
-    call print_num
-    inc ax
-    call print_num
-    inc ax
-    call print_fizz
-    inc ax
-    call print_num
-    inc ax
-    call print_buzz
-    inc ax
-    call print_fizz
-    inc ax
-    call print_num
-    inc ax
-    call print_num
-    inc ax
-    call print_fizz
-    inc ax
-    call print_buzz
-    inc ax
-    call print_num
-    inc ax
-    call print_fizz
-    inc ax
-    call print_num
-    inc ax
-    call print_num
-    inc ax
-    call print_fizzbuzz
-    jmp start
-
-.stack
-"""
-
-
-def decorate(data: Iterable[int]) -> str:
-    data2 = ""
-    codes = "0123456789ABCDEF"
-    for i in data:
-        data2 += fr"\x{codes[i // 16]}{codes[i % 16]}"
-    return data2
-
-
-def main():
-    result = parse(text2)
+def compile_code(text: str) -> bytes:
+    result = parse(text)
     data = MachineFile()
     for i in result:
         if isinstance(i, Pointer):
@@ -117,12 +16,25 @@ def main():
             continue
         i.process().serialize(data)
     data.apply_relocations()
-    print(data.symbols)
-    print(" ".join(hex(i)[2:] for i in data.data))
-    print(", ".join(map(str, data.data)))
-    print(decorate(data.data))
-    print(len(data.data))
+    return data.data
 
 
-if __name__ == "__main__":
-    main()
+def main(args: List[str]):
+    arg_parser = ArgumentParser(description="Assemble Uasm")
+    arg_parser.add_argument('file', type=str, help='Input file')
+    arg_parser.add_argument('-o', type=str, default=None, help='output file')
+    names = arg_parser.parse_args(args[1:])
+
+    with open(names.file) as f:
+        data: bytes = compile_code(f.read())
+
+    output = names.o
+    if output is None:
+        output = PurePosixPath(names.file).stem + ".mc"
+
+    with open(output, "wb") as f:
+        f.write(data)
+
+
+if __name__ == '__main__':
+    main(sys.argv)
