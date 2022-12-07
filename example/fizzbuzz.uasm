@@ -24,7 +24,8 @@
     pop ax
     ret
   .num
-    data "00", 0
+    times 2, "0"
+    data 0
   .table
     data "0123456789ABCDEF"
 

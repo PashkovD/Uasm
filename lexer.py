@@ -46,7 +46,7 @@ class Lexer:
             t.type = 'OpData'
             return t
 
-        if t.value.upper() == "Times":
+        if t.value.upper() == "TIMES":
             t.value = InstData
             t.type = 'OpTimes'
             return t

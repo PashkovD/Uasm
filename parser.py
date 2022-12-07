@@ -90,7 +90,9 @@ class Parser:
     @staticmethod
     def p_instruction_times(p):
         """instruction : OpTimes expression COMMA data_operands NEWLINE"""
-        p[0] = p[1](p[4] * p[2], line=p.slice[1].lineno)
+        if len(p[2].symbols) != 0:
+            raise Exception(f"{p.slice[1].lineno}: pointers in TIMES num not suported")
+        p[0] = p[1](p[4] * p[2].num, line=p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_inc(p):
