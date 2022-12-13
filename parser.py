@@ -65,7 +65,7 @@ class Parser:
 
     @staticmethod
     def p_expression_unary(p):
-        """expression : MINUS INTEGER"""
+        """expression : MINUS expression"""
         if p[1] == "-":
             p[0] = -p[2]
         else:
