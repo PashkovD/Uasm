@@ -1,4 +1,5 @@
 from ply import *
+from ply.lex import Token
 
 from instructions import EnumInstImm, EnumInstReversible, EnumInstLeft, EnumInstClear, InstData
 from regs import Reg
@@ -19,6 +20,27 @@ class Lexer:
         self.lexer = lex.lex(module=self, **kwargs)
 
     @staticmethod
+    def __generate_regs(local: dict) -> None:
+        for i in Reg:
+            @Token(i.name.upper())
+            def f(t):
+                t.value = Reg[t.value]
+                t.type = 'REG'
+                return t
+
+            local[f't_REG_{i.name}_u'] = staticmethod(f)
+
+            @Token(i.name.lower())
+            def f(t):
+                t.value = Reg[t.value.upper()]
+                t.type = 'REG'
+                return t
+
+            local[f't_REG_{i.name}_l'] = staticmethod(f)
+
+    __generate_regs(locals())
+
+    @staticmethod
     def t_STRING(t):
         r'\".*?\"'
         t.value = t.value[1:-1]
@@ -27,12 +49,6 @@ class Lexer:
     @staticmethod
     def t_ID(t):
         r'[A-Za-z_][A-Za-z0-9_]*'
-        try:
-            t.value = Reg[t.value.upper()]
-            t.type = 'REG'
-            return t
-        except KeyError:
-            ...
 
         if t.value.upper() == "DATA":
             t.value = InstData
