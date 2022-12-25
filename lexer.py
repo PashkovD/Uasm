@@ -43,7 +43,14 @@ class Lexer:
 
     for i in Reg:
         _new_keyword(f"t_REG_{i.name}", i.name, i, "REG", locals())
+
     del i
+
+    _new_keyword("t_DATA", "data", InstData, "OpData", locals())
+    _new_keyword("t_TIMES", "times", InstData, "OpTimes", locals())
+
+    _new_keyword("t_INC", "inc", EnumInstReversible.ADD, "OpInc", locals())
+    _new_keyword("t_DEC", "dec", EnumInstReversible.SUB, "OpDec", locals())
 
     @staticmethod
     def t_STRING(t):
@@ -52,45 +59,8 @@ class Lexer:
         return t
 
     @staticmethod
-    def t_data_l(t):
-        r'data'
-        t.type = 'OpData'
-        t.value = InstData
-        return t
-
-    @staticmethod
-    def t_data_u(t):
-        r'DATA'
-        t.type = 'OpData'
-        t.value = InstData
-        return t
-
-    @staticmethod
-    def t_times_l(t):
-        r'times'
-        t.value = InstData
-        t.type = 'OpTimes'
-        return t
-
-    @staticmethod
-    def t_times_u(t):
-        r'TIMES'
-        t.value = InstData
-        t.type = 'OpTimes'
-        return t
-
-    @staticmethod
     def t_ID(t):
         r'[A-Za-z_][A-Za-z0-9_]*'
-        if t.value.upper() == "INC":
-            t.value = EnumInstReversible.ADD
-            t.type = 'OpInc'
-            return t
-
-        if t.value.upper() == "DEC":
-            t.value = EnumInstReversible.SUB
-            t.type = 'OpDec'
-            return t
 
         try:
             t.value = EnumInstImm[t.value.upper()]
