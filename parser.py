@@ -17,15 +17,14 @@ class Pointer:
         return f"Pointer({self.name}): {self.line}"
 
 
-class Parser:
-    tokens = Lexer.tokens
-
+class Parser(Lexer):
     precedence = (
-        ('left', 'DOT'),
-        ('left', 'MINUS', 'PLUS'),
+        ('left', '.'),
+        ('left', '-', '+'),
     )
 
     def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.parser = yacc.yacc(module=self, **kwargs)
 
     def parse(self, input_: str, **kwargs):
@@ -50,7 +49,7 @@ class Parser:
 
     @staticmethod
     def p_pointer(p):
-        """pointer : DOT ID NEWLINE"""
+        """pointer : '.' ID NEWLINE"""
         p[0] = Pointer(p[2], p.slice[1].lineno)
 
     @staticmethod
@@ -65,7 +64,7 @@ class Parser:
 
     @staticmethod
     def p_expression_unary(p):
-        """expression : MINUS expression"""
+        """expression : '-' expression"""
         if p[1] == "-":
             p[0] = -p[2]
         else:
@@ -73,8 +72,8 @@ class Parser:
 
     @staticmethod
     def p_expression_bin(p):
-        """expression : expression PLUS expression
-                      | expression MINUS expression"""
+        """expression : expression '+' expression
+                      | expression '-' expression"""
         if p[2] == "+":
             p[0] = p[1] + p[3]
         elif p[2] == "-":
@@ -89,7 +88,7 @@ class Parser:
 
     @staticmethod
     def p_instruction_times(p):
-        """instruction : OpTimes expression COMMA data_operands NEWLINE"""
+        """instruction : OpTimes expression ',' data_operands NEWLINE"""
         if len(p[2].symbols) != 0:
             raise Exception(f"{p.slice[1].lineno}: pointers in TIMES num not suported")
         p[0] = p[1](p[4] * p[2].num, line=p.slice[1].lineno)
@@ -111,17 +110,17 @@ class Parser:
 
     @staticmethod
     def p_instruction_rev(p):
-        """instruction : InstReversible REG COMMA REG NEWLINE
-                       | InstReversible addr COMMA REG NEWLINE
-                       | InstReversible addr_disp COMMA REG NEWLINE
-                       | InstReversible expression COMMA REG NEWLINE"""
+        """instruction : InstReversible REG ',' REG NEWLINE
+                       | InstReversible addr ',' REG NEWLINE
+                       | InstReversible addr_disp ',' REG NEWLINE
+                       | InstReversible expression ',' REG NEWLINE"""
         p[0] = p[1].value(p[2], p[4], is_reversed=False, line=p.slice[1].lineno)
 
     @staticmethod
     def p_instruction_rev_reversed(p):
-        """instruction : InstReversible REG COMMA addr NEWLINE
-                       | InstReversible REG COMMA addr_disp NEWLINE
-                       | InstReversible REG COMMA expression NEWLINE"""
+        """instruction : InstReversible REG ',' addr NEWLINE
+                       | InstReversible REG ',' addr_disp NEWLINE
+                       | InstReversible REG ',' expression NEWLINE"""
         p[0] = p[1].value(p[4], p[2], is_reversed=True, line=p.slice[1].lineno)
 
     @staticmethod
@@ -139,17 +138,17 @@ class Parser:
 
     @staticmethod
     def p_addr(p):
-        """addr : LBREACKET REG RBREACKET"""
+        """addr : '[' REG ']'"""
         p[0] = Address(p[2])
 
     @staticmethod
     def p_addr_disp(p):
-        """addr_disp : LBREACKET REG DOTS expression RBREACKET"""
+        """addr_disp : '[' REG ':' expression ']'"""
         p[0] = AddressDisp(p[2], p[4])
 
     @staticmethod
     def p_addr_disp_reversed(p):
-        """addr_disp : LBREACKET expression DOTS REG RBREACKET"""
+        """addr_disp : '[' expression ':' REG ']'"""
         p[0] = AddressDisp(p[4], p[2])
 
     @staticmethod
@@ -165,10 +164,10 @@ class Parser:
 
     @staticmethod
     def p_data_operands(p):
-        """data_operands   : data_operands COMMA data_operand"""
+        """data_operands   : data_operands ',' data_operand"""
         p[0] = p[1]
         p[0].append(p[3])
 
 
 def parse(data: str) -> List[Union[Pointer, BaseInstruction]]:
-    return Parser().parse(data, lexer=Lexer().lexer)
+    return Parser().parse(data)

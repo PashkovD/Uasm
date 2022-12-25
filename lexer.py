@@ -6,21 +6,14 @@ from regs import Reg
 
 class Lexer:
     tokens = (
-        'PLUS', 'MINUS', 'RBREACKET', 'LBREACKET',
-        'COMMA', 'DOT', 'DOTS', 'INTEGER', 'STRING', 'REG',
+        'INTEGER', 'STRING', 'REG',
         'InstImm', 'InstReversible', 'InstLeft', 'InstClear',
         'OpData', 'OpTimes', 'OpInc', 'OpDec',
         'ID', 'NEWLINE'
     )
 
     t_ignore = ' \t'
-    t_DOTS = r':'
-    t_PLUS = r'\+'
-    t_MINUS = r'-'
-    t_LBREACKET = r'\['
-    t_RBREACKET = r'\]'
-    t_DOT = r'\.'
-    t_COMMA = r'\,'
+    literals = ':+-[].,'
 
     def __init__(self, **kwargs):
         self.lexer = lex.lex(module=self, **kwargs)
