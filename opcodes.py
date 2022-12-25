@@ -42,34 +42,22 @@ class Opcode(int, Enum):
     NOT = 29
 
 
-class BaseOpcode:
-    opcode: Opcode
-
+class ClearOpcode:
     @typechecked
-    def __init__(self, line: int):
-        self.line: int = line
-
-    @property
-    def size(self) -> int:
-        return 1
-
-    def __str__(self):
-        return f"{self.opcode.name}"
-
-    def __repr__(self):
-        return f"{type(self).__name__}()"
+    def __init__(self, opcode: Opcode):
+        self.opcode: Opcode = opcode
 
     @typechecked
     def serialize(self, file: MachineFile) -> None:
-        file.write(bytes((self.opcode.value,)))
+        file.write(bytes((self.opcode,)))
 
 
-class OpDATA(BaseOpcode):
-    opcode = Opcode.DATA
+class OpDATA(ClearOpcode):
+    opcode = None
 
     @typechecked
-    def __init__(self, line: int, data: List[NotInt]):
-        super().__init__(line)
+    def __init__(self, data: List[NotInt]):
+        super().__init__(Opcode.DATA)
         self.data: List[NotInt] = data
 
     @typechecked
@@ -77,189 +65,26 @@ class OpDATA(BaseOpcode):
         for i in self.data:
             file.write_int(i)
 
-    @property
-    def size(self) -> int:
-        return len(self.data)
 
-
-class ModRMOpcode(BaseOpcode):
+class ModRMOpcode(ClearOpcode):
     @typechecked
-    def __init__(self, line: int, modrm: BaseModRM):
-        super().__init__(line)
+    def __init__(self, opcode: Opcode, modrm: BaseModRM):
+        super().__init__(opcode)
         self.modrm: BaseModRM = modrm
-
-    def __str__(self):
-        return f"{self.opcode.name} {str(self.modrm)}"
-
-    def __repr__(self):
-        return f"{type(self).__name__}({str(self.modrm)})"
 
     @typechecked
     def serialize(self, file: MachineFile) -> None:
-        file.write(bytes((self.opcode.value,)))
+        file.write(bytes((self.opcode,)))
         self.modrm.serialize(file)
 
 
-class IMMOpcode(BaseOpcode):
+class IMMOpcode(ClearOpcode):
     @typechecked
-    def __init__(self, line: int, imm: NotInt):
-        super().__init__(line)
+    def __init__(self, opcode: Opcode, imm: NotInt):
+        super().__init__(opcode)
         self.imm: NotInt = imm
-
-    def __str__(self):
-        return f"{self.opcode.name} {str(self.imm)}"
-
-    def __repr__(self):
-        return f"{type(self).__name__}({str(self.imm)})"
 
     @typechecked
     def serialize(self, file: MachineFile) -> None:
-        file.write(bytes((self.opcode.value,)))
+        file.write(bytes((self.opcode,)))
         file.write_int(self.imm)
-
-
-class OpADD(ModRMOpcode):
-    opcode = Opcode.ADD
-
-
-class OpSUB(ModRMOpcode):
-    opcode = Opcode.SUB
-
-
-class OpMOV(ModRMOpcode):
-    opcode = Opcode.MOV
-
-
-class OpCMP(ModRMOpcode):
-    opcode = Opcode.CMP
-
-
-class OpADDR(ModRMOpcode):
-    opcode = Opcode.ADDR
-
-
-class OpSUBR(ModRMOpcode):
-    opcode = Opcode.SUBR
-
-
-class OpMOVR(ModRMOpcode):
-    opcode = Opcode.MOVR
-
-
-class OpCMPR(ModRMOpcode):
-    opcode = Opcode.CMPR
-
-
-class OpJMP(IMMOpcode):
-    opcode = Opcode.JMP
-
-
-class OpJE(IMMOpcode):
-    opcode = Opcode.JE
-
-
-class OpJNE(IMMOpcode):
-    opcode = Opcode.JNE
-
-
-class OpJL(IMMOpcode):
-    opcode = Opcode.JL
-
-
-class OpJLE(IMMOpcode):
-    opcode = Opcode.JLE
-
-
-class OpJG(IMMOpcode):
-    opcode = Opcode.JG
-
-
-class OpJGE(IMMOpcode):
-    opcode = Opcode.JGE
-
-
-class OpPUSH(ModRMOpcode):
-    opcode = Opcode.PUSH
-
-
-class OpPOP(ModRMOpcode):
-    opcode = Opcode.POP
-
-
-class OpCALL(IMMOpcode):
-    opcode = Opcode.CALL
-
-
-class OpRET(BaseOpcode):
-    opcode = Opcode.RET
-
-
-class OpSHL(ModRMOpcode):
-    opcode = Opcode.SHL
-
-
-class OpSHLR(ModRMOpcode):
-    opcode = Opcode.SHLR
-
-
-class OpSHR(ModRMOpcode):
-    opcode = Opcode.SHR
-
-
-class OpSHRR(ModRMOpcode):
-    opcode = Opcode.SHRR
-
-
-class OpAND(ModRMOpcode):
-    opcode = Opcode.AND
-
-
-class OpANDR(ModRMOpcode):
-    opcode = Opcode.ANDR
-
-
-class OpOR(ModRMOpcode):
-    opcode = Opcode.OR
-
-
-class OpORR(ModRMOpcode):
-    opcode = Opcode.ORR
-
-
-class OpXOR(ModRMOpcode):
-    opcode = Opcode.XOR
-
-
-class OpXORR(ModRMOpcode):
-    opcode = Opcode.XORR
-
-
-class OpNOT(ModRMOpcode):
-    opcode = Opcode.NOT
-
-# op_cls: Dict[Opcode, Type[BaseOpcode]] = {
-#     OpDATA.opcode: OpDATA,
-#     OpADD.opcode: OpADD,
-#     OpSUB.opcode: OpSUB,
-#     OpMOV.opcode: OpMOV,
-#     OpCMP.opcode: OpCMP,
-#     OpADDR.opcode: OpADDR,
-#     OpSUBR.opcode: OpSUBR,
-#     OpMOVR.opcode: OpMOVR,
-#     OpCMPR.opcode: OpCMPR,
-#     OpJMP.opcode: OpJMP,
-#     OpJE.opcode: OpJE,
-#     OpJNE.opcode: OpJNE,
-#     OpJL.opcode: OpJL,
-#     OpJLE.opcode: OpJLE,
-#     OpJG.opcode: OpJG,
-#     OpJGE.opcode: OpJGE,
-#     OpPUSH.opcode: OpPUSH,
-#     OpPOP.opcode: OpPOP,
-#     OpCALL.opcode: OpCALL,
-#     OpRET.opcode: OpRET,
-#     OpSHL.opcode: OpSHL,
-#     OpSHLR.opcode: OpSHLR,
-#     OpSHR.opcode: OpSHR,
-#     OpSHRR.opcode: OpSHRR,
-# }

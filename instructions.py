@@ -3,9 +3,9 @@ from typing import Union, Type, List
 
 from typeguard import typechecked
 
-import opcodes
 from modrm import AddressDisp, Address, DispRM, RegRM, AtRegRM, AtRegDispRM
 from not_int import NotInt
+from opcodes import Opcode, ClearOpcode, OpDATA, ModRMOpcode, IMMOpcode
 from regs import Reg
 
 
@@ -17,7 +17,7 @@ class BaseInstruction:
     def __repr__(self):
         return f"{self.line}: {type(self).__name__}"
 
-    def process(self) -> opcodes.BaseOpcode:
+    def process(self) -> ClearOpcode:
         pass
 
 
@@ -27,7 +27,7 @@ class InstData(BaseInstruction):
         self.args = args
         super().__init__(line=line)
 
-    def process(self) -> opcodes.BaseOpcode:
+    def process(self) -> ClearOpcode:
         line: List[NotInt] = []
         for i in self.args:
             if isinstance(i, str):
@@ -35,12 +35,12 @@ class InstData(BaseInstruction):
                     line.append(NotInt(j))
                 continue
             line.append(i)
-        return opcodes.OpDATA(self.line, line)
+        return OpDATA(line)
 
 
 class BaseInstReversible(BaseInstruction):
-    normal_opcode: Type[opcodes.ModRMOpcode]
-    reverse_opcode: Type[opcodes.ModRMOpcode]
+    normal_opcode: Opcode
+    reverse_opcode: Opcode
 
     @typechecked
     def __init__(self, left: Union[Reg, NotInt, Address, AddressDisp], right: Reg, is_reversed: bool, *, line: int):
@@ -49,7 +49,7 @@ class BaseInstReversible(BaseInstruction):
         self.is_reversed = is_reversed
         super().__init__(line=line)
 
-    def process(self) -> opcodes.ModRMOpcode:
+    def process(self) -> ModRMOpcode:
         if isinstance(self.left, Reg):
             mod_rm = RegRM(self.left, self.right)
         elif isinstance(self.left, NotInt):
@@ -61,31 +61,31 @@ class BaseInstReversible(BaseInstruction):
         else:
             raise Exception
         if self.is_reversed:
-            return self.reverse_opcode(self.line, mod_rm)
-        return self.normal_opcode(self.line, mod_rm)
+            return ModRMOpcode(self.reverse_opcode, mod_rm)
+        return ModRMOpcode(self.normal_opcode, mod_rm)
 
 
 class BaseInstIMM(BaseInstruction):
-    imm_opcode: Type[opcodes.IMMOpcode]
+    imm_opcode: Opcode
 
     @typechecked
     def __init__(self, num: NotInt, *, line: int):
         self.num = num
         super().__init__(line=line)
 
-    def process(self) -> opcodes.IMMOpcode:
-        return self.imm_opcode(self.line, self.num)
+    def process(self) -> IMMOpcode:
+        return IMMOpcode(self.imm_opcode, self.num)
 
 
 class BaseInstLeft(BaseInstruction):
-    left_opcode: Type[opcodes.ModRMOpcode]
+    left_opcode: Opcode
 
     @typechecked
     def __init__(self, arg: Union[Reg, NotInt, Address, AddressDisp], *, line: int):
         self.arg = arg
         super().__init__(line=line)
 
-    def process(self) -> opcodes.ModRMOpcode:
+    def process(self) -> ModRMOpcode:
         if isinstance(self.arg, Reg):
             mod_rm = RegRM(self.arg, Reg.AX)
         elif isinstance(self.arg, NotInt):
@@ -96,73 +96,73 @@ class BaseInstLeft(BaseInstruction):
             mod_rm = AtRegDispRM(self.arg, Reg.AX)
         else:
             raise Exception
-        return self.left_opcode(self.line, mod_rm)
+        return ModRMOpcode(self.left_opcode, mod_rm)
 
 
 class BaseInstClear(BaseInstruction):
-    clear_opcode: Type[opcodes.BaseOpcode]
+    clear_opcode: Opcode
 
-    def process(self) -> opcodes.BaseOpcode:
-        return self.clear_opcode(self.line)
+    def process(self) -> ClearOpcode:
+        return ClearOpcode(self.clear_opcode)
 
 
 class EnumInstLeft(Enum):
     @staticmethod
-    def new(left_opcode_: Type[opcodes.ModRMOpcode]) -> Type[BaseInstLeft]:
+    def new(left_opcode_: Opcode) -> Type[BaseInstLeft]:
         class NewInst(BaseInstLeft):
             left_opcode = left_opcode_
 
         return NewInst
 
-    PUSH = new(opcodes.OpPUSH)
-    POP = new(opcodes.OpPOP)
-    NOT = new(opcodes.OpNOT)
+    PUSH = new(Opcode.PUSH)
+    POP = new(Opcode.POP)
+    NOT = new(Opcode.NOT)
 
 
 class EnumInstReversible(Enum):
     @staticmethod
-    def new(normal_: Type[opcodes.ModRMOpcode], reverse_: Type[opcodes.ModRMOpcode]) -> Type[BaseInstReversible]:
+    def new(normal_: Opcode, reverse_: Opcode) -> Type[BaseInstReversible]:
         class NewInst(BaseInstReversible):
-            normal_opcode: Type[opcodes.ModRMOpcode] = normal_
-            reverse_opcode: Type[opcodes.ModRMOpcode] = reverse_
+            normal_opcode: Opcode = normal_
+            reverse_opcode: Opcode = reverse_
 
         return NewInst
 
-    ADD = new(opcodes.OpADD, opcodes.OpADDR)
-    SUB = new(opcodes.OpSUB, opcodes.OpSUBR)
-    MOV = new(opcodes.OpMOV, opcodes.OpMOVR)
-    CMP = new(opcodes.OpCMP, opcodes.OpCMPR)
-    SHL = new(opcodes.OpSHL, opcodes.OpSHLR)
-    SHR = new(opcodes.OpSHR, opcodes.OpSHRR)
-    AND = new(opcodes.OpAND, opcodes.OpANDR)
-    OR = new(opcodes.OpOR, opcodes.OpORR)
-    XOR = new(opcodes.OpXOR, opcodes.OpXORR)
+    ADD = new(Opcode.ADD, Opcode.ADDR)
+    SUB = new(Opcode.SUB, Opcode.SUBR)
+    MOV = new(Opcode.MOV, Opcode.MOVR)
+    CMP = new(Opcode.CMP, Opcode.CMPR)
+    SHL = new(Opcode.SHL, Opcode.SHLR)
+    SHR = new(Opcode.SHR, Opcode.SHRR)
+    AND = new(Opcode.AND, Opcode.ANDR)
+    OR = new(Opcode.OR, Opcode.ORR)
+    XOR = new(Opcode.XOR, Opcode.XORR)
 
 
 class EnumInstImm(Enum):
     @staticmethod
-    def new(imm_opcode_: Type[opcodes.IMMOpcode]) -> Type[BaseInstIMM]:
+    def new(imm_opcode_: Opcode) -> Type[BaseInstIMM]:
         class NewInst(BaseInstIMM):
-            imm_opcode: Type[opcodes.IMMOpcode] = imm_opcode_
+            imm_opcode: Opcode = imm_opcode_
 
         return NewInst
 
-    JMP = new(opcodes.OpJMP)
-    JE = new(opcodes.OpJE)
-    JNE = new(opcodes.OpJNE)
-    JL = new(opcodes.OpJL)
-    JLE = new(opcodes.OpJLE)
-    JG = new(opcodes.OpJG)
-    JGE = new(opcodes.OpJGE)
-    CALL = new(opcodes.OpCALL)
+    JMP = new(Opcode.JMP)
+    JE = new(Opcode.JE)
+    JNE = new(Opcode.JNE)
+    JL = new(Opcode.JL)
+    JLE = new(Opcode.JLE)
+    JG = new(Opcode.JG)
+    JGE = new(Opcode.JGE)
+    CALL = new(Opcode.CALL)
 
 
 class EnumInstClear(Enum):
     @staticmethod
-    def new(clear_opcode_: Type[opcodes.BaseOpcode]) -> Type[BaseInstClear]:
+    def new(clear_opcode_: Opcode) -> Type[BaseInstClear]:
         class NewInst(BaseInstClear):
             clear_opcode = clear_opcode_
 
         return NewInst
 
-    RET = new(opcodes.OpRET)
+    RET = new(Opcode.RET)
