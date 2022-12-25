@@ -1,8 +1,30 @@
+from typing import Any, Dict
+
 from ply import *
 from ply.lex import Token
+from typeguard import typechecked
 
 from instructions import EnumInstImm, EnumInstReversible, EnumInstLeft, EnumInstClear, InstData
 from regs import Reg
+
+
+@typechecked
+def _new_keyword(name: str, rule: str, value: Any, type_: str, local: Dict[str, Any]):
+    @Token(rule.lower())
+    def f(t):
+        t.value = value
+        t.type = type_
+        return t
+
+    local[name + "_l"] = staticmethod(f)
+
+    @Token(rule.upper())
+    def f(t):
+        t.value = value
+        t.type = type_
+        return t
+
+    local[name + "_u"] = staticmethod(f)
 
 
 class Lexer:
@@ -19,26 +41,9 @@ class Lexer:
     def __init__(self, **kwargs):
         self.lexer = lex.lex(module=self, **kwargs)
 
-    @staticmethod
-    def __generate_regs(local: dict) -> None:
-        for i in Reg:
-            @Token(i.name.upper())
-            def f(t):
-                t.value = i
-                t.type = 'REG'
-                return t
-
-            local[f't_REG_{i.name}_u'] = staticmethod(f)
-
-            @Token(i.name.lower())
-            def f(t):
-                t.value = i
-                t.type = 'REG'
-                return t
-
-            local[f't_REG_{i.name}_l'] = staticmethod(f)
-
-    __generate_regs(locals())
+    for i in Reg:
+        _new_keyword(f"t_REG_{i.name}", i.name, i, "REG", locals())
+    del i
 
     @staticmethod
     def t_STRING(t):
