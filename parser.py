@@ -99,8 +99,8 @@ class Parser(Lexer):
         p[0] = p[1].value(NotInt(1), p[2], is_reversed=True, line=p.slice[1].lineno)
 
     @staticmethod
-    def p_instruction_imm(p):
-        """instruction : InstImm expression NEWLINE"""
+    def p_instruction_jmp(p):
+        """instruction : InstJmp expression NEWLINE"""
         p[0] = p[1].value(p[2], line=p.slice[1].lineno)
 
     @staticmethod

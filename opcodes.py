@@ -78,7 +78,7 @@ class ModRMOpcode(ClearOpcode):
         self.modrm.serialize(file)
 
 
-class IMMOpcode(ClearOpcode):
+class JMPOpcode(ClearOpcode):
     @typechecked
     def __init__(self, opcode: Opcode, imm: NotInt):
         super().__init__(opcode)
