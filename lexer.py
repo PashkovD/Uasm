@@ -36,6 +36,7 @@ class Lexer:
     )
 
     t_ignore = ' \t'
+    t_ID = '[A-Za-z_][A-Za-z0-9_]*'
     literals = ':+-[].,'
 
     def __init__(self, **kwargs):
@@ -43,6 +44,14 @@ class Lexer:
 
     for i in Reg:
         _new_keyword(f"t_REG_{i.name}", i.name, i, "REG", locals())
+    for i in EnumInstImm:
+        _new_keyword(f"t_InstImm_{i.name}", i.name, i, "InstImm", locals())
+    for i in EnumInstReversible:
+        _new_keyword(f"t_InstReversible_{i.name}", i.name, i, "InstReversible", locals())
+    for i in EnumInstLeft:
+        _new_keyword(f"t_InstLeft_{i.name}", i.name, i, "InstLeft", locals())
+    for i in EnumInstClear:
+        _new_keyword(f"t_InstClear_{i.name}", i.name, i, "InstClear", locals())
 
     del i
 
@@ -56,36 +65,6 @@ class Lexer:
     def t_STRING(t):
         r'\".*?\"'
         t.value = t.value[1:-1]
-        return t
-
-    @staticmethod
-    def t_ID(t):
-        r'[A-Za-z_][A-Za-z0-9_]*'
-
-        try:
-            t.value = EnumInstImm[t.value.upper()]
-            t.type = 'InstImm'
-            return t
-        except KeyError:
-            ...
-        try:
-            t.value = EnumInstReversible[t.value.upper()]
-            t.type = 'InstReversible'
-            return t
-        except KeyError:
-            ...
-        try:
-            t.value = EnumInstLeft[t.value.upper()]
-            t.type = 'InstLeft'
-            return t
-        except KeyError:
-            ...
-        try:
-            t.value = EnumInstClear[t.value.upper()]
-            t.type = 'InstClear'
-            return t
-        except KeyError:
-            ...
         return t
 
     @staticmethod
