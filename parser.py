@@ -94,13 +94,8 @@ class Parser(Lexer):
         p[0] = p[1](p[4] * p[2].num, line=p.slice[1].lineno)
 
     @staticmethod
-    def p_instruction_inc(p):
-        """instruction : OpDec REG NEWLINE"""
-        p[0] = p[1].value(NotInt(1), p[2], is_reversed=True, line=p.slice[1].lineno)
-
-    @staticmethod
-    def p_instruction_dec(p):
-        """instruction : OpInc REG NEWLINE"""
+    def p_instruction_inc_dec(p):
+        """instruction : OpIncDec REG NEWLINE"""
         p[0] = p[1].value(NotInt(1), p[2], is_reversed=True, line=p.slice[1].lineno)
 
     @staticmethod

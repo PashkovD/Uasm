@@ -31,7 +31,7 @@ class Lexer:
     tokens = (
         'INTEGER', 'STRING', 'REG',
         'InstImm', 'InstReversible', 'InstLeft', 'InstClear',
-        'OpData', 'OpTimes', 'OpInc', 'OpDec',
+        'OpData', 'OpTimes', 'OpIncDec',
         'ID', 'NEWLINE'
     )
 
@@ -58,8 +58,8 @@ class Lexer:
     _new_keyword("t_DATA", "data", InstData, "OpData", locals())
     _new_keyword("t_TIMES", "times", InstData, "OpTimes", locals())
 
-    _new_keyword("t_INC", "inc", EnumInstReversible.ADD, "OpInc", locals())
-    _new_keyword("t_DEC", "dec", EnumInstReversible.SUB, "OpDec", locals())
+    _new_keyword("t_INC", "inc", EnumInstReversible.ADD, "OpIncDec", locals())
+    _new_keyword("t_DEC", "dec", EnumInstReversible.SUB, "OpIncDec", locals())
 
     @staticmethod
     def t_STRING(t):
