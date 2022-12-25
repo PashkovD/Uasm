@@ -24,7 +24,7 @@ class Lexer:
         for i in Reg:
             @Token(i.name.upper())
             def f(t):
-                t.value = Reg[t.value]
+                t.value = i
                 t.type = 'REG'
                 return t
 
@@ -32,7 +32,7 @@ class Lexer:
 
             @Token(i.name.lower())
             def f(t):
-                t.value = Reg[t.value.upper()]
+                t.value = i
                 t.type = 'REG'
                 return t
 
@@ -47,19 +47,36 @@ class Lexer:
         return t
 
     @staticmethod
+    def t_data_l(t):
+        r'data'
+        t.type = 'OpData'
+        t.value = InstData
+        return t
+
+    @staticmethod
+    def t_data_u(t):
+        r'DATA'
+        t.type = 'OpData'
+        t.value = InstData
+        return t
+
+    @staticmethod
+    def t_times_l(t):
+        r'times'
+        t.value = InstData
+        t.type = 'OpTimes'
+        return t
+
+    @staticmethod
+    def t_times_u(t):
+        r'TIMES'
+        t.value = InstData
+        t.type = 'OpTimes'
+        return t
+
+    @staticmethod
     def t_ID(t):
         r'[A-Za-z_][A-Za-z0-9_]*'
-
-        if t.value.upper() == "DATA":
-            t.value = InstData
-            t.type = 'OpData'
-            return t
-
-        if t.value.upper() == "TIMES":
-            t.value = InstData
-            t.type = 'OpTimes'
-            return t
-
         if t.value.upper() == "INC":
             t.value = EnumInstReversible.ADD
             t.type = 'OpInc'
