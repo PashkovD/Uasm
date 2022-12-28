@@ -14,7 +14,7 @@ def compile_code(text: str) -> bytes:
         if isinstance(i, Pointer):
             data.symbols[i.name] = data.current_pos
             continue
-        i.process().serialize(data)
+        i.serialize(data)
     data.apply_relocations()
     return data.data
 
