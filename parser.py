@@ -42,14 +42,14 @@ class Parser(Lexer):
 
     @staticmethod
     def p_code(p):
-        """code : code instruction
-                | code pointer"""
+        """code : code instruction NEWLINE
+                | code pointer NEWLINE"""
         p[0] = p[1]
         p[0].append(p[2])
 
     @staticmethod
     def p_pointer(p):
-        """pointer : '.' ID NEWLINE"""
+        """pointer : '.' ID"""
         p[0] = Pointer(p[2], p.slice[1].lineno)
 
     @staticmethod
@@ -83,52 +83,52 @@ class Parser(Lexer):
 
     @staticmethod
     def p_instruction_data(p):
-        """instruction : OpData data_operands NEWLINE"""
+        """instruction : OpData data_operands"""
         p[0] = p[1](p[2], line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_times(p):
-        """instruction : OpTimes expression ',' data_operands NEWLINE"""
+        """instruction : OpTimes expression ',' data_operands"""
         if len(p[2].symbols) != 0:
             raise Exception(f"{p.slice[1].lineno}: pointers in TIMES num not suported")
         p[0] = p[1](p[4] * p[2].num, line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_inc_dec(p):
-        """instruction : OpIncDec REG NEWLINE"""
+        """instruction : OpIncDec REG"""
         p[0] = p[1].value(NotInt(1), p[2], is_reversed=True, line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_jmp(p):
-        """instruction : InstJmp expression NEWLINE"""
+        """instruction : InstJmp expression"""
         p[0] = p[1].value(p[2], line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_rev(p):
-        """instruction : InstReversible REG ',' REG NEWLINE
-                       | InstReversible addr ',' REG NEWLINE
-                       | InstReversible addr_disp ',' REG NEWLINE
-                       | InstReversible expression ',' REG NEWLINE"""
+        """instruction : InstReversible REG ',' REG
+                       | InstReversible addr ',' REG
+                       | InstReversible addr_disp ',' REG
+                       | InstReversible expression ',' REG"""
         p[0] = p[1].value(p[2], p[4], is_reversed=False, line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_rev_reversed(p):
-        """instruction : InstReversible REG ',' addr NEWLINE
-                       | InstReversible REG ',' addr_disp NEWLINE
-                       | InstReversible REG ',' expression NEWLINE"""
+        """instruction : InstReversible REG ',' addr
+                       | InstReversible REG ',' addr_disp
+                       | InstReversible REG ',' expression"""
         p[0] = p[1].value(p[4], p[2], is_reversed=True, line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_left(p):
-        """instruction : InstLeft expression NEWLINE
-                       | InstLeft REG NEWLINE
-                       | InstLeft addr NEWLINE
-                       | InstLeft addr_disp NEWLINE"""
+        """instruction : InstLeft expression
+                       | InstLeft REG
+                       | InstLeft addr
+                       | InstLeft addr_disp"""
         p[0] = p[1].value(p[2], line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_clear(p):
-        """instruction : InstClear NEWLINE"""
+        """instruction : InstClear"""
         p[0] = p[1].value(line=p.slice[1].lineno).process()
 
     @staticmethod
