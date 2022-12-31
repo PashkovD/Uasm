@@ -6,6 +6,7 @@ from lexer import Lexer
 from modrm import Address, AddressDisp
 from not_int import NotInt
 from opcodes import ClearOpcode
+from preprocessor import Preprocessor
 
 
 class Pointer:
@@ -43,7 +44,9 @@ class Parser(Lexer):
     @staticmethod
     def p_code(p):
         """code : code instruction NEWLINE
-                | code pointer NEWLINE"""
+                | code instruction
+                | code pointer NEWLINE
+                | code pointer"""
         p[0] = p[1]
         p[0].append(p[2])
 
@@ -80,6 +83,23 @@ class Parser(Lexer):
             p[0] = p[1] - p[3]
         else:
             raise Exception
+
+    @staticmethod
+    def p_data_operand(p):
+        """data_operand   : expression
+                          | STRING"""
+        p[0] = p[1]
+
+    @staticmethod
+    def p_data_operands_start(p):
+        """data_operands   : data_operand"""
+        p[0] = [p[1]]
+
+    @staticmethod
+    def p_data_operands(p):
+        """data_operands   : data_operands ',' data_operand"""
+        p[0] = p[1]
+        p[0].append(p[3])
 
     @staticmethod
     def p_instruction_data(p):
@@ -146,23 +166,13 @@ class Parser(Lexer):
         """addr_disp : '[' expression ':' REG ']'"""
         p[0] = AddressDisp(p[4], p[2])
 
-    @staticmethod
-    def p_data_operand(p):
-        """data_operand   : expression
-                          | STRING"""
-        p[0] = p[1]
-
-    @staticmethod
-    def p_data_operands_start(p):
-        """data_operands   : data_operand"""
-        p[0] = [p[1]]
-
-    @staticmethod
-    def p_data_operands(p):
-        """data_operands   : data_operands ',' data_operand"""
-        p[0] = p[1]
-        p[0].append(p[3])
-
 
 def parse(data: str) -> List[Union[Pointer, ClearOpcode]]:
-    return Parser().parse(data)
+    dat1 = Lexer()
+    dat1.lexer.input(data)
+    dat = Preprocessor(dat1)
+    dat2 = []
+    while not dat.is_ended():
+        dat2 += Parser().parse(data, lexer=dat)
+
+    return dat2
