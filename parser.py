@@ -43,12 +43,9 @@ class Parser(Lexer):
 
     @staticmethod
     def p_code(p):
-        """code : code instruction NEWLINE
-                | code instruction
-                | code pointer NEWLINE
-                | code pointer"""
-        p[0] = p[1]
-        p[0].append(p[2])
+        """code : instruction
+                | pointer"""
+        p[0] = [p[1]]
 
     @staticmethod
     def p_pointer(p):
