@@ -34,7 +34,6 @@ class ModRMMod(int, Enum):
 
 
 class BaseModRM:
-    size: int
     mod: ModRMMod
 
     @typechecked
@@ -50,7 +49,6 @@ class BaseModRM:
 
 
 class RegRM(BaseModRM):
-    size = 1
     mod = ModRMMod.reg
 
     @typechecked
@@ -64,7 +62,6 @@ class RegRM(BaseModRM):
 
 
 class AtRegRM(BaseModRM):
-    size = 1
     mod = ModRMMod.at_reg
 
     @typechecked
@@ -78,7 +75,6 @@ class AtRegRM(BaseModRM):
 
 
 class AtRegDispRM(BaseModRM):
-    size = 2
     mod = ModRMMod.at_reg_disp
 
     @typechecked
@@ -93,7 +89,6 @@ class AtRegDispRM(BaseModRM):
 
 
 class DispRM(BaseModRM):
-    size = 2
     mod = ModRMMod.disp
 
     @typechecked
