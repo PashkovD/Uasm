@@ -74,7 +74,7 @@ class AtRegRM(BaseModRM):
         file.write(bytes(((self.mod.value << 6) + (self.address.reg << 3) + self.r_reg,)))
 
 
-class AtRegDispRM(BaseModRM):
+class AtRegDisp8RM(BaseModRM):
     mod = ModRMMod.at_reg_disp
 
     @typechecked
@@ -88,7 +88,7 @@ class AtRegDispRM(BaseModRM):
         file.write_int8(self.left.disp)
 
 
-class DispRM(BaseModRM):
+class Disp8RM(BaseModRM):
     mod = ModRMMod.disp
 
     @typechecked
@@ -100,3 +100,31 @@ class DispRM(BaseModRM):
     def serialize(self, file: MachineFile) -> None:
         file.write(bytes(((self.mod << 6) + self.r_reg,)))
         file.write_int8(self.disp)
+
+
+class AtRegDisp16RM(BaseModRM):
+    mod = ModRMMod.at_reg_disp
+
+    @typechecked
+    def __init__(self, address: AddressDisp, r_reg: Reg):
+        super().__init__(r_reg)
+        self.left = address
+
+    @typechecked
+    def serialize(self, file: MachineFile) -> None:
+        file.write(bytes(((self.mod << 6) + (self.left.reg << 3) + self.r_reg,)))
+        file.write_int16(self.left.disp)
+
+
+class Disp16RM(BaseModRM):
+    mod = ModRMMod.disp
+
+    @typechecked
+    def __init__(self, disp: NotInt, r_reg: Reg):
+        super().__init__(r_reg)
+        self.disp = disp
+
+    @typechecked
+    def serialize(self, file: MachineFile) -> None:
+        file.write(bytes(((self.mod << 6) + self.r_reg,)))
+        file.write_int16(self.disp)

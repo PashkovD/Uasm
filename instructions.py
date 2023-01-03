@@ -3,7 +3,7 @@ from typing import Union, Type, List
 
 from typeguard import typechecked
 
-from modrm import AddressDisp, Address, DispRM, RegRM, AtRegRM, AtRegDispRM
+from modrm import AddressDisp, Address, Disp8RM, RegRM, AtRegRM, AtRegDisp8RM
 from not_int import NotInt
 from opcodes import Opcode, ClearOpcode, OpDATA, ModRMOpcode, JMPOpcode
 from regs import Reg, Reg8
@@ -53,11 +53,11 @@ class BaseInstReversible(BaseInstruction):
         if isinstance(self.left, Reg):
             mod_rm = RegRM(self.left, self.right)
         elif isinstance(self.left, NotInt):
-            mod_rm = DispRM(self.left, self.right)
+            mod_rm = Disp8RM(self.left, self.right)
         elif isinstance(self.left, Address):
             mod_rm = AtRegRM(self.left, self.right)
         elif isinstance(self.left, AddressDisp):
-            mod_rm = AtRegDispRM(self.left, self.right)
+            mod_rm = AtRegDisp8RM(self.left, self.right)
         else:
             raise Exception
         if self.is_reversed:
@@ -89,11 +89,11 @@ class BaseInstLeft(BaseInstruction):
         if isinstance(self.arg, Reg):
             mod_rm = RegRM(self.arg, Reg8.AX)
         elif isinstance(self.arg, NotInt):
-            mod_rm = DispRM(self.arg, Reg8.AX)
+            mod_rm = Disp8RM(self.arg, Reg8.AX)
         elif isinstance(self.arg, Address):
             mod_rm = AtRegRM(self.arg, Reg8.AX)
         elif isinstance(self.arg, AddressDisp):
-            mod_rm = AtRegDispRM(self.arg, Reg8.AX)
+            mod_rm = AtRegDisp8RM(self.arg, Reg8.AX)
         else:
             raise Exception
         return ModRMOpcode(self.left_opcode, mod_rm)
