@@ -4,13 +4,13 @@ from typeguard import typechecked
 
 from machine_file import MachineFile
 from not_int import NotInt
-from regs import Reg8
+from regs import Reg
 
 
 class Address:
     @typechecked
-    def __init__(self, reg: Reg8):
-        self.reg: Reg8 = reg
+    def __init__(self, reg: Reg):
+        self.reg: Reg = reg
 
     def __repr__(self):
         return f"Address[{self.reg}]"
@@ -18,9 +18,9 @@ class Address:
 
 class AddressDisp:
     @typechecked
-    def __init__(self, reg: Reg8, disp: NotInt):
+    def __init__(self, reg: Reg, disp: NotInt):
         self.disp = disp
-        self.reg: Reg8 = reg
+        self.reg: Reg = reg
 
     def __repr__(self):
         return f"AddressDisp[{self.reg} + {self.disp}]"
@@ -38,9 +38,8 @@ class BaseModRM:
     mod: ModRMMod
 
     @typechecked
-    def __init__(self, r_reg: Reg8):
-        assert r_reg in Reg8
-        self.r_reg: Reg8 = r_reg
+    def __init__(self, r_reg: Reg):
+        self.r_reg: Reg = r_reg
 
     @typechecked
     def serialize(self, file: MachineFile) -> None:
@@ -55,17 +54,13 @@ class RegRM(BaseModRM):
     mod = ModRMMod.reg
 
     @typechecked
-    def __init__(self, l_reg: Reg8, r_reg: Reg8):
+    def __init__(self, l_reg: Reg, r_reg: Reg):
         super().__init__(r_reg)
-        assert l_reg in Reg8
-        self.l_reg: Reg8 = l_reg
+        self.l_reg: Reg = l_reg
 
     @typechecked
     def serialize(self, file: MachineFile) -> None:
-        file.write(bytes(((self.mod << 6) + (self.l_reg.value << 3) + self.r_reg.value,)))
-
-    def __str__(self) -> str:
-        return f"{self.l_reg.value}, {self.r_reg.name}"
+        file.write(bytes(((self.mod << 6) + (self.l_reg << 3) + self.r_reg,)))
 
 
 class AtRegRM(BaseModRM):
@@ -73,16 +68,13 @@ class AtRegRM(BaseModRM):
     mod = ModRMMod.at_reg
 
     @typechecked
-    def __init__(self, address: Address, r_reg: Reg8):
+    def __init__(self, address: Address, r_reg: Reg):
         super().__init__(r_reg)
         self.address = address
 
     @typechecked
     def serialize(self, file: MachineFile) -> None:
-        file.write(bytes(((self.mod.value << 6) + (self.address.reg.value << 3) + self.r_reg.value,)))
-
-    def __str__(self) -> str:
-        return f"[{self.address.reg}], {self.r_reg.name}"
+        file.write(bytes(((self.mod.value << 6) + (self.address.reg << 3) + self.r_reg,)))
 
 
 class AtRegDispRM(BaseModRM):
@@ -90,16 +82,13 @@ class AtRegDispRM(BaseModRM):
     mod = ModRMMod.at_reg_disp
 
     @typechecked
-    def __init__(self, address: AddressDisp, r_reg: Reg8):
+    def __init__(self, address: AddressDisp, r_reg: Reg):
         super().__init__(r_reg)
         self.left = address
 
-    def __str__(self) -> str:
-        return f"[{self.left.reg.name} + {self.left.disp}], {self.r_reg.name}"
-
     @typechecked
     def serialize(self, file: MachineFile) -> None:
-        file.write(bytes(((self.mod << 6) + (self.left.reg.value << 3) + self.r_reg.value,)))
+        file.write(bytes(((self.mod << 6) + (self.left.reg << 3) + self.r_reg,)))
         file.write_int(self.left.disp)
 
 
@@ -108,14 +97,11 @@ class DispRM(BaseModRM):
     mod = ModRMMod.disp
 
     @typechecked
-    def __init__(self, disp: NotInt, r_reg: Reg8):
+    def __init__(self, disp: NotInt, r_reg: Reg):
         super().__init__(r_reg)
         self.disp = disp
 
     @typechecked
     def serialize(self, file: MachineFile) -> None:
-        file.write(bytes(((self.mod << 6) + self.r_reg.value,)))
+        file.write(bytes(((self.mod << 6) + self.r_reg,)))
         file.write_int(self.disp)
-
-    def __str__(self) -> str:
-        return f"{self.disp}, {self.r_reg.name}"

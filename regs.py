@@ -1,7 +1,11 @@
 from enum import Enum
 
 
-class Reg8(Enum):
+class Reg(int):
+    ...
+
+
+class Reg8(Reg, Enum):
     AX = 0
     BX = 1
     CX = 2
