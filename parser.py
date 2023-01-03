@@ -18,7 +18,7 @@ class Pointer:
         return f"Pointer({self.name}): {self.line}"
 
 
-class Parser(Lexer):
+class BaseParser(Lexer):
     precedence = (
         ('left', '.'),
         ('left', '-', '+'),
@@ -98,6 +98,9 @@ class Parser(Lexer):
         p[0] = p[1]
         p[0].append(p[3])
 
+
+class Parser8(BaseParser):
+
     @staticmethod
     def p_instruction_data(p):
         """instruction : OpData data_operands"""
@@ -170,6 +173,6 @@ def parse(data: str) -> List[Union[Pointer, ClearOpcode]]:
     dat = Preprocessor(dat1)
     dat2 = []
     while not dat.is_ended():
-        dat2 += Parser().parse(data, lexer=dat)
+        dat2 += Parser8().parse(data, lexer=dat)
 
     return dat2
