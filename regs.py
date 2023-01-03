@@ -13,3 +13,13 @@ class Reg8(Reg, Enum):
     SP = 7
 
     def __repr__(self): return f"{type(self).__name__}.{self.name}"
+
+
+class Reg16(Reg, Enum):
+    EAX = 0
+    EBX = 1
+    ECX = 2
+    EDX = 3
+    ESP = 7
+
+    def __repr__(self): return f"{type(self).__name__}.{self.name}"

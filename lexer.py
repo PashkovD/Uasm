@@ -5,7 +5,7 @@ from ply.lex import Token
 from typeguard import typechecked
 
 from instructions import EnumInstJmp, EnumInstReversible, EnumInstLeft, EnumInstClear, InstData
-from regs import Reg8
+from regs import Reg8, Reg16
 
 
 @typechecked
@@ -29,7 +29,7 @@ def _new_keyword(name: str, rule: str, value: Any, type_: str, local: Dict[str, 
 
 class Lexer:
     tokens = (
-        'INTEGER', 'STRING', 'REG8',
+        'INTEGER', 'STRING', 'REG8', 'REG16',
         'InstJmp', 'InstReversible', 'InstLeft', 'InstClear',
         'OpData', 'OpTimes', 'OpIncDec',
         'ID', 'NEWLINE'
@@ -44,6 +44,8 @@ class Lexer:
 
     for i in Reg8:
         _new_keyword(f"t_REG8_{i.name}", i.name, i, "REG8", locals())
+    for i in Reg16:
+        _new_keyword(f"t_REG16_{i.name}", i.name, i, "REG16", locals())
     for i in EnumInstJmp:
         _new_keyword(f"t_InstJmp_{i.name}", i.name, i, "InstJmp", locals())
     for i in EnumInstReversible:
