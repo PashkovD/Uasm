@@ -65,8 +65,8 @@ class BaseInstReversible(BaseInstruction):
         return ModRMOpcode(self.normal_opcode, mod_rm)
 
 
-class BaseInstJMP(BaseInstruction):
-    jmp_opcode: Opcode
+class BaseInstIMM(BaseInstruction):
+    imm_opcode: Opcode
 
     @typechecked
     def __init__(self, num: NotInt, *, line: int):
@@ -74,7 +74,7 @@ class BaseInstJMP(BaseInstruction):
         super().__init__(line=line)
 
     def process(self) -> JMPOpcode:
-        return JMPOpcode(self.jmp_opcode, self.num)
+        return JMPOpcode(self.imm_opcode, self.num)
 
 
 class BaseInstLeft(BaseInstruction):
@@ -139,11 +139,11 @@ class EnumInstReversible(Enum):
     XOR = new(Opcode.XOR, Opcode.XORR)
 
 
-class EnumInstJmp(Enum):
+class EnumInstIMM(Enum):
     @staticmethod
-    def new(imm_opcode_: Opcode) -> Type[BaseInstJMP]:
-        class NewInst(BaseInstJMP):
-            jmp_opcode: Opcode = imm_opcode_
+    def new(imm_opcode_: Opcode) -> Type[BaseInstIMM]:
+        class NewInst(BaseInstIMM):
+            imm_opcode: Opcode = imm_opcode_
 
         return NewInst
 

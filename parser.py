@@ -2,7 +2,7 @@ from typing import List, Union
 
 from ply import yacc
 
-from instructions import EnumInstClear, EnumInstLeft, EnumInstReversible, EnumInstJmp, InstData
+from instructions import EnumInstClear, EnumInstLeft, EnumInstReversible, EnumInstIMM, InstData
 from lexer import Lexer
 from modrm import Address, AddressDisp
 from not_int import NotInt
@@ -120,9 +120,9 @@ class Parser8(BaseParser):
         p[0] = EnumInstReversible[p[1]].value(NotInt(1), p[2], is_reversed=True, line=p.slice[1].lineno).process()
 
     @staticmethod
-    def p_instruction_jmp(p):
-        """instruction : InstJmp expression"""
-        p[0] = EnumInstJmp[p[1]].value(p[2], line=p.slice[1].lineno).process()
+    def p_instruction_imm(p):
+        """instruction : InstIMM expression"""
+        p[0] = EnumInstIMM[p[1]].value(p[2], line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_rev(p):
