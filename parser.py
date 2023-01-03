@@ -112,7 +112,7 @@ class Parser(Lexer):
 
     @staticmethod
     def p_instruction_inc_dec(p):
-        """instruction : OpIncDec REG"""
+        """instruction : OpIncDec REG8"""
         p[0] = p[1].value(NotInt(1), p[2], is_reversed=True, line=p.slice[1].lineno).process()
 
     @staticmethod
@@ -122,25 +122,25 @@ class Parser(Lexer):
 
     @staticmethod
     def p_instruction_rev(p):
-        """instruction : InstReversible REG ',' REG
-                       | InstReversible addr ',' REG
-                       | InstReversible addr_disp ',' REG
-                       | InstReversible expression ',' REG"""
+        """instruction : InstReversible REG8 ',' REG8
+                       | InstReversible addr8 ',' REG8
+                       | InstReversible addr_disp8 ',' REG8
+                       | InstReversible expression ',' REG8"""
         p[0] = p[1].value(p[2], p[4], is_reversed=False, line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_rev_reversed(p):
-        """instruction : InstReversible REG ',' addr
-                       | InstReversible REG ',' addr_disp
-                       | InstReversible REG ',' expression"""
+        """instruction : InstReversible REG8 ',' addr8
+                       | InstReversible REG8 ',' addr_disp8
+                       | InstReversible REG8 ',' expression"""
         p[0] = p[1].value(p[4], p[2], is_reversed=True, line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_left(p):
         """instruction : InstLeft expression
-                       | InstLeft REG
-                       | InstLeft addr
-                       | InstLeft addr_disp"""
+                       | InstLeft REG8
+                       | InstLeft addr8
+                       | InstLeft addr_disp8"""
         p[0] = p[1].value(p[2], line=p.slice[1].lineno).process()
 
     @staticmethod
@@ -150,17 +150,17 @@ class Parser(Lexer):
 
     @staticmethod
     def p_addr(p):
-        """addr : '[' REG ']'"""
+        """addr8 : '[' REG8 ']'"""
         p[0] = Address(p[2])
 
     @staticmethod
     def p_addr_disp(p):
-        """addr_disp : '[' REG ':' expression ']'"""
+        """addr_disp8 : '[' REG8 ':' expression ']'"""
         p[0] = AddressDisp(p[2], p[4])
 
     @staticmethod
     def p_addr_disp_reversed(p):
-        """addr_disp : '[' expression ':' REG ']'"""
+        """addr_disp8 : '[' expression ':' REG8 ']'"""
         p[0] = AddressDisp(p[4], p[2])
 
 

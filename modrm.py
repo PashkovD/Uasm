@@ -4,13 +4,13 @@ from typeguard import typechecked
 
 from machine_file import MachineFile
 from not_int import NotInt
-from regs import Reg
+from regs import Reg8
 
 
 class Address:
     @typechecked
-    def __init__(self, reg: Reg):
-        self.reg: Reg = reg
+    def __init__(self, reg: Reg8):
+        self.reg: Reg8 = reg
 
     def __repr__(self):
         return f"Address[{self.reg}]"
@@ -18,9 +18,9 @@ class Address:
 
 class AddressDisp:
     @typechecked
-    def __init__(self, reg: Reg, disp: NotInt):
+    def __init__(self, reg: Reg8, disp: NotInt):
         self.disp = disp
-        self.reg: Reg = reg
+        self.reg: Reg8 = reg
 
     def __repr__(self):
         return f"AddressDisp[{self.reg} + {self.disp}]"
@@ -38,9 +38,9 @@ class BaseModRM:
     mod: ModRMMod
 
     @typechecked
-    def __init__(self, r_reg: Reg):
-        assert r_reg in Reg
-        self.r_reg: Reg = r_reg
+    def __init__(self, r_reg: Reg8):
+        assert r_reg in Reg8
+        self.r_reg: Reg8 = r_reg
 
     @typechecked
     def serialize(self, file: MachineFile) -> None:
@@ -55,10 +55,10 @@ class RegRM(BaseModRM):
     mod = ModRMMod.reg
 
     @typechecked
-    def __init__(self, l_reg: Reg, r_reg: Reg):
+    def __init__(self, l_reg: Reg8, r_reg: Reg8):
         super().__init__(r_reg)
-        assert l_reg in Reg
-        self.l_reg: Reg = l_reg
+        assert l_reg in Reg8
+        self.l_reg: Reg8 = l_reg
 
     @typechecked
     def serialize(self, file: MachineFile) -> None:
@@ -73,7 +73,7 @@ class AtRegRM(BaseModRM):
     mod = ModRMMod.at_reg
 
     @typechecked
-    def __init__(self, address: Address, r_reg: Reg):
+    def __init__(self, address: Address, r_reg: Reg8):
         super().__init__(r_reg)
         self.address = address
 
@@ -90,7 +90,7 @@ class AtRegDispRM(BaseModRM):
     mod = ModRMMod.at_reg_disp
 
     @typechecked
-    def __init__(self, address: AddressDisp, r_reg: Reg):
+    def __init__(self, address: AddressDisp, r_reg: Reg8):
         super().__init__(r_reg)
         self.left = address
 
@@ -108,7 +108,7 @@ class DispRM(BaseModRM):
     mod = ModRMMod.disp
 
     @typechecked
-    def __init__(self, disp: NotInt, r_reg: Reg):
+    def __init__(self, disp: NotInt, r_reg: Reg8):
         super().__init__(r_reg)
         self.disp = disp
 

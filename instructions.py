@@ -6,7 +6,7 @@ from typeguard import typechecked
 from modrm import AddressDisp, Address, DispRM, RegRM, AtRegRM, AtRegDispRM
 from not_int import NotInt
 from opcodes import Opcode, ClearOpcode, OpDATA, ModRMOpcode, JMPOpcode
-from regs import Reg
+from regs import Reg8
 
 
 class BaseInstruction:
@@ -43,14 +43,14 @@ class BaseInstReversible(BaseInstruction):
     reverse_opcode: Opcode
 
     @typechecked
-    def __init__(self, left: Union[Reg, NotInt, Address, AddressDisp], right: Reg, is_reversed: bool, *, line: int):
+    def __init__(self, left: Union[Reg8, NotInt, Address, AddressDisp], right: Reg8, is_reversed: bool, *, line: int):
         self.left = left
         self.right = right
         self.is_reversed = is_reversed
         super().__init__(line=line)
 
     def process(self) -> ModRMOpcode:
-        if isinstance(self.left, Reg):
+        if isinstance(self.left, Reg8):
             mod_rm = RegRM(self.left, self.right)
         elif isinstance(self.left, NotInt):
             mod_rm = DispRM(self.left, self.right)
@@ -81,19 +81,19 @@ class BaseInstLeft(BaseInstruction):
     left_opcode: Opcode
 
     @typechecked
-    def __init__(self, arg: Union[Reg, NotInt, Address, AddressDisp], *, line: int):
+    def __init__(self, arg: Union[Reg8, NotInt, Address, AddressDisp], *, line: int):
         self.arg = arg
         super().__init__(line=line)
 
     def process(self) -> ModRMOpcode:
-        if isinstance(self.arg, Reg):
-            mod_rm = RegRM(self.arg, Reg.AX)
+        if isinstance(self.arg, Reg8):
+            mod_rm = RegRM(self.arg, Reg8.AX)
         elif isinstance(self.arg, NotInt):
-            mod_rm = DispRM(self.arg, Reg.AX)
+            mod_rm = DispRM(self.arg, Reg8.AX)
         elif isinstance(self.arg, Address):
-            mod_rm = AtRegRM(self.arg, Reg.AX)
+            mod_rm = AtRegRM(self.arg, Reg8.AX)
         elif isinstance(self.arg, AddressDisp):
-            mod_rm = AtRegDispRM(self.arg, Reg.AX)
+            mod_rm = AtRegDispRM(self.arg, Reg8.AX)
         else:
             raise Exception
         return ModRMOpcode(self.left_opcode, mod_rm)
