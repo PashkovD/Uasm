@@ -5,7 +5,7 @@ from typeguard import typechecked
 
 from modrm import AddressDisp, Address, Disp8RM, RegRM, AtRegRM, AtRegDisp8RM
 from not_int import NotInt
-from opcodes import Opcode, ClearOpcode, OpDATA, ModRMOpcode, JMPOpcode
+from opcodes import Opcode, ClearOpcode, OpDATA, ModRMOpcode, JMPOpcode, Opcode8
 from regs import Reg, Reg8
 
 
@@ -114,9 +114,9 @@ class EnumInstLeft(Enum):
 
         return NewInst
 
-    PUSH = new(Opcode.PUSH)
-    POP = new(Opcode.POP)
-    NOT = new(Opcode.NOT)
+    PUSH = new(Opcode8.PUSH)
+    POP = new(Opcode8.POP)
+    NOT = new(Opcode8.NOT)
 
 
 class EnumInstReversible(Enum):
@@ -128,15 +128,15 @@ class EnumInstReversible(Enum):
 
         return NewInst
 
-    ADD = new(Opcode.ADD, Opcode.ADDR)
-    SUB = new(Opcode.SUB, Opcode.SUBR)
-    MOV = new(Opcode.MOV, Opcode.MOVR)
-    CMP = new(Opcode.CMP, Opcode.CMPR)
-    SHL = new(Opcode.SHL, Opcode.SHLR)
-    SHR = new(Opcode.SHR, Opcode.SHRR)
-    AND = new(Opcode.AND, Opcode.ANDR)
-    OR = new(Opcode.OR, Opcode.ORR)
-    XOR = new(Opcode.XOR, Opcode.XORR)
+    ADD = new(Opcode8.ADD, Opcode8.ADDR)
+    SUB = new(Opcode8.SUB, Opcode8.SUBR)
+    MOV = new(Opcode8.MOV, Opcode8.MOVR)
+    CMP = new(Opcode8.CMP, Opcode8.CMPR)
+    SHL = new(Opcode8.SHL, Opcode8.SHLR)
+    SHR = new(Opcode8.SHR, Opcode8.SHRR)
+    AND = new(Opcode8.AND, Opcode8.ANDR)
+    OR = new(Opcode8.OR, Opcode8.ORR)
+    XOR = new(Opcode8.XOR, Opcode8.XORR)
 
 
 class EnumInstIMM(Enum):
@@ -147,14 +147,14 @@ class EnumInstIMM(Enum):
 
         return NewInst
 
-    JMP = new(Opcode.JMP)
-    JE = new(Opcode.JE)
-    JNE = new(Opcode.JNE)
-    JL = new(Opcode.JL)
-    JLE = new(Opcode.JLE)
-    JG = new(Opcode.JG)
-    JGE = new(Opcode.JGE)
-    CALL = new(Opcode.CALL)
+    JMP = new(Opcode8.JMP)
+    JE = new(Opcode8.JE)
+    JNE = new(Opcode8.JNE)
+    JL = new(Opcode8.JL)
+    JLE = new(Opcode8.JLE)
+    JG = new(Opcode8.JG)
+    JGE = new(Opcode8.JGE)
+    CALL = new(Opcode8.CALL)
 
 
 class EnumInstClear(Enum):
@@ -165,4 +165,4 @@ class EnumInstClear(Enum):
 
         return NewInst
 
-    RET = new(Opcode.RET)
+    RET = new(Opcode8.RET)

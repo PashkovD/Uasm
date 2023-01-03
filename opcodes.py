@@ -8,8 +8,11 @@ from modrm import BaseModRM
 from not_int import NotInt
 
 
-class Opcode(int, Enum):
-    DATA = -1
+class Opcode(int):
+    ...
+
+
+class Opcode8(Opcode, Enum):
     ADD = 0
     ADDR = 1
     SUB = 2
@@ -42,6 +45,39 @@ class Opcode(int, Enum):
     NOT = 29
 
 
+class Opcode16(Opcode, Enum):
+    ADD = 0 + 64
+    ADDR = 1 + 64
+    SUB = 2 + 64
+    SUBR = 3 + 64
+    MOV = 4 + 64
+    MOVR = 5 + 64
+    CMP = 6 + 64
+    CMPR = 7 + 64
+    JMP = 8 + 64
+    JE = 9 + 64
+    JNE = 10 + 64
+    JL = 11 + 64
+    JLE = 12 + 64
+    JG = 13 + 64
+    JGE = 14 + 64
+    PUSH = 15 + 64
+    POP = 16 + 64
+    CALL = 17 + 64
+    RET = 18 + 64
+    SHL = 19 + 64
+    SHLR = 20 + 64
+    SHR = 21 + 64
+    SHRR = 22 + 64
+    AND = 23 + 64
+    ANDR = 24 + 64
+    XOR = 25 + 64
+    XORR = 26 + 64
+    OR = 27 + 64
+    ORR = 28 + 64
+    NOT = 29 + 64
+
+
 class ClearOpcode:
     @typechecked
     def __init__(self, opcode: Opcode):
@@ -53,11 +89,9 @@ class ClearOpcode:
 
 
 class OpDATA(ClearOpcode):
-    opcode = None
-
     @typechecked
     def __init__(self, data: List[NotInt]):
-        super().__init__(Opcode.DATA)
+        super().__init__(Opcode(-1))
         self.data: List[NotInt] = data
 
     @typechecked
