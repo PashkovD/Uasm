@@ -30,7 +30,7 @@ def main(args: List[str]):
 
     output = names.o
     if output is None:
-        output = PurePosixPath(names.file).stem + ".mc"
+        output = PurePosixPath(names.file).stem + ".bin"
 
     with open(output, "wb") as f:
         f.write(data)
