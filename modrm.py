@@ -85,7 +85,7 @@ class AtRegDispRM(BaseModRM):
     @typechecked
     def serialize(self, file: MachineFile) -> None:
         file.write(bytes(((self.mod << 6) + (self.left.reg << 3) + self.r_reg,)))
-        file.write_int(self.left.disp)
+        file.write_int8(self.left.disp)
 
 
 class DispRM(BaseModRM):
@@ -99,4 +99,4 @@ class DispRM(BaseModRM):
     @typechecked
     def serialize(self, file: MachineFile) -> None:
         file.write(bytes(((self.mod << 6) + self.r_reg,)))
-        file.write_int(self.disp)
+        file.write_int8(self.disp)

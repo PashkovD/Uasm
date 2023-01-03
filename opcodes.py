@@ -63,7 +63,7 @@ class OpDATA(ClearOpcode):
     @typechecked
     def serialize(self, file: MachineFile) -> None:
         for i in self.data:
-            file.write_int(i)
+            file.write_int8(i)
 
 
 class ModRMOpcode(ClearOpcode):
@@ -87,4 +87,4 @@ class JMPOpcode(ClearOpcode):
     @typechecked
     def serialize(self, file: MachineFile) -> None:
         file.write(bytes((self.opcode,)))
-        file.write_int(self.imm)
+        file.write_int8(self.imm)
