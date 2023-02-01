@@ -2,7 +2,7 @@ from typing import List, Union
 
 from ply import yacc
 
-from instructions import EnumInstClear, EnumInstLeft, EnumInstReversible, EnumInstIMM, InstData
+from instructions import EnumInstClear8, EnumInstLeft8, EnumInstReversible8, EnumInstIMM8, InstData
 from lexer import Lexer
 from modrm import Address, AddressDisp
 from not_int import NotInt
@@ -117,12 +117,12 @@ class Parser8(BaseParser):
     @staticmethod
     def p_instruction_inc_dec(p):
         """instruction : OpIncDec REG8"""
-        p[0] = EnumInstReversible[p[1]].value(NotInt(1), p[2], is_reversed=True, line=p.slice[1].lineno).process()
+        p[0] = EnumInstReversible8[p[1]].value(NotInt(1), p[2], is_reversed=True, line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_imm(p):
         """instruction : InstIMM expression"""
-        p[0] = EnumInstIMM[p[1]].value(p[2], line=p.slice[1].lineno).process()
+        p[0] = EnumInstIMM8[p[1]].value(p[2], line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_rev(p):
@@ -130,14 +130,14 @@ class Parser8(BaseParser):
                        | InstReversible addr8 ',' REG8
                        | InstReversible addr_disp8 ',' REG8
                        | InstReversible expression ',' REG8"""
-        p[0] = EnumInstReversible[p[1]].value(p[2], p[4], is_reversed=False, line=p.slice[1].lineno).process()
+        p[0] = EnumInstReversible8[p[1]].value(p[2], p[4], is_reversed=False, line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_rev_reversed(p):
         """instruction : InstReversible REG8 ',' addr8
                        | InstReversible REG8 ',' addr_disp8
                        | InstReversible REG8 ',' expression"""
-        p[0] = EnumInstReversible[p[1]].value(p[4], p[2], is_reversed=True, line=p.slice[1].lineno).process()
+        p[0] = EnumInstReversible8[p[1]].value(p[4], p[2], is_reversed=True, line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_left(p):
@@ -145,12 +145,12 @@ class Parser8(BaseParser):
                        | InstLeft REG8
                        | InstLeft addr8
                        | InstLeft addr_disp8"""
-        p[0] = EnumInstLeft[p[1]].value(p[2], line=p.slice[1].lineno).process()
+        p[0] = EnumInstLeft8[p[1]].value(p[2], line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_instruction_clear(p):
         """instruction : InstClear"""
-        p[0] = EnumInstClear[p[1]].value(line=p.slice[1].lineno).process()
+        p[0] = EnumInstClear8[p[1]].value(line=p.slice[1].lineno).process()
 
     @staticmethod
     def p_addr(p):

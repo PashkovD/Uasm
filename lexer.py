@@ -4,7 +4,7 @@ from ply import *
 from ply.lex import Token
 from typeguard import typechecked
 
-from instructions import EnumInstIMM, EnumInstReversible, EnumInstLeft, EnumInstClear
+from instructions import EnumInstIMM8, EnumInstReversible8, EnumInstLeft8, EnumInstClear8
 from regs import Reg8, Reg16
 
 
@@ -46,13 +46,13 @@ class Lexer:
         _new_keyword(f"t_REG8_{i.name}", i.name, i, "REG8", locals())
     for i in Reg16:
         _new_keyword(f"t_REG16_{i.name}", i.name, i, "REG16", locals())
-    for i in EnumInstIMM:
+    for i in EnumInstIMM8:
         _new_keyword(f"t_InstIMM_{i.name}", i.name, i.name, "InstIMM", locals())
-    for i in EnumInstReversible:
+    for i in EnumInstReversible8:
         _new_keyword(f"t_InstReversible_{i.name}", i.name, i.name, "InstReversible", locals())
-    for i in EnumInstLeft:
+    for i in EnumInstLeft8:
         _new_keyword(f"t_InstLeft_{i.name}", i.name, i.name, "InstLeft", locals())
-    for i in EnumInstClear:
+    for i in EnumInstClear8:
         _new_keyword(f"t_InstClear_{i.name}", i.name, i.name, "InstClear", locals())
 
     del i
@@ -60,8 +60,8 @@ class Lexer:
     _new_keyword("t_DATA", "data", "DATA", "OpData", locals())
     _new_keyword("t_TIMES", "times", "TIMES", "OpTimes", locals())
 
-    _new_keyword("t_INC", "inc", EnumInstReversible.ADD.name, "OpIncDec", locals())
-    _new_keyword("t_DEC", "dec", EnumInstReversible.SUB.name, "OpIncDec", locals())
+    _new_keyword("t_INC", "inc", EnumInstReversible8.ADD.name, "OpIncDec", locals())
+    _new_keyword("t_DEC", "dec", EnumInstReversible8.SUB.name, "OpIncDec", locals())
 
     @staticmethod
     def t_STRING(t):

@@ -5,7 +5,7 @@ from typeguard import typechecked
 
 from modrm import AddressDisp, Address, Disp8RM, RegRM, AtRegRM, AtRegDisp8RM
 from not_int import NotInt
-from opcodes import Opcode, ClearOpcode, OpDATA, ModRMOpcode, JMPOpcode, Opcode8
+from opcodes import Opcode, ClearOpcode, OpDATA, ModRMOpcode, JMPOpcode, Opcode8, Opcode16
 from regs import Reg, Reg8
 
 
@@ -106,7 +106,7 @@ class BaseInstClear(BaseInstruction):
         return ClearOpcode(self.clear_opcode)
 
 
-class EnumInstLeft(Enum):
+class EnumInstLeft8(Enum):
     @staticmethod
     def new(left_opcode_: Opcode) -> Type[BaseInstLeft]:
         class NewInst(BaseInstLeft):
@@ -119,7 +119,7 @@ class EnumInstLeft(Enum):
     NOT = new(Opcode8.NOT)
 
 
-class EnumInstReversible(Enum):
+class EnumInstReversible8(Enum):
     @staticmethod
     def new(normal_: Opcode, reverse_: Opcode) -> Type[BaseInstReversible]:
         class NewInst(BaseInstReversible):
@@ -139,7 +139,7 @@ class EnumInstReversible(Enum):
     XOR = new(Opcode8.XOR, Opcode8.XORR)
 
 
-class EnumInstIMM(Enum):
+class EnumInstIMM8(Enum):
     @staticmethod
     def new(imm_opcode_: Opcode) -> Type[BaseInstIMM]:
         class NewInst(BaseInstIMM):
@@ -157,7 +157,7 @@ class EnumInstIMM(Enum):
     CALL = new(Opcode8.CALL)
 
 
-class EnumInstClear(Enum):
+class EnumInstClear8(Enum):
     @staticmethod
     def new(clear_opcode_: Opcode) -> Type[BaseInstClear]:
         class NewInst(BaseInstClear):
@@ -166,3 +166,65 @@ class EnumInstClear(Enum):
         return NewInst
 
     RET = new(Opcode8.RET)
+
+
+class EnumInstLeft16(Enum):
+    @staticmethod
+    def new(left_opcode_: Opcode) -> Type[BaseInstLeft]:
+        class NewInst(BaseInstLeft):
+            left_opcode = left_opcode_
+
+        return NewInst
+
+    PUSH = new(Opcode16.PUSH)
+    POP = new(Opcode16.POP)
+    NOT = new(Opcode16.NOT)
+
+
+class EnumInstReversible16(Enum):
+    @staticmethod
+    def new(normal_: Opcode, reverse_: Opcode) -> Type[BaseInstReversible]:
+        class NewInst(BaseInstReversible):
+            normal_opcode: Opcode = normal_
+            reverse_opcode: Opcode = reverse_
+
+        return NewInst
+
+    ADD = new(Opcode16.ADD, Opcode16.ADDR)
+    SUB = new(Opcode16.SUB, Opcode16.SUBR)
+    MOV = new(Opcode16.MOV, Opcode16.MOVR)
+    CMP = new(Opcode16.CMP, Opcode16.CMPR)
+    SHL = new(Opcode16.SHL, Opcode16.SHLR)
+    SHR = new(Opcode16.SHR, Opcode16.SHRR)
+    AND = new(Opcode16.AND, Opcode16.ANDR)
+    OR = new(Opcode16.OR, Opcode16.ORR)
+    XOR = new(Opcode16.XOR, Opcode16.XORR)
+
+
+class EnumInstIMM16(Enum):
+    @staticmethod
+    def new(imm_opcode_: Opcode) -> Type[BaseInstIMM]:
+        class NewInst(BaseInstIMM):
+            imm_opcode: Opcode = imm_opcode_
+
+        return NewInst
+
+    JMP = new(Opcode16.JMP)
+    JE = new(Opcode16.JE)
+    JNE = new(Opcode16.JNE)
+    JL = new(Opcode16.JL)
+    JLE = new(Opcode16.JLE)
+    JG = new(Opcode16.JG)
+    JGE = new(Opcode16.JGE)
+    CALL = new(Opcode16.CALL)
+
+
+class EnumInstClear16(Enum):
+    @staticmethod
+    def new(clear_opcode_: Opcode) -> Type[BaseInstClear]:
+        class NewInst(BaseInstClear):
+            clear_opcode = clear_opcode_
+
+        return NewInst
+
+    RET = new(Opcode16.RET)
