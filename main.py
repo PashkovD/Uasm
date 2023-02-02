@@ -1,10 +1,25 @@
 import sys
 from argparse import ArgumentParser
 from pathlib import PurePosixPath
-from typing import List
+from typing import List, Union
 
+from lexer import Lexer
 from machine_file import MachineFile
-from parser import parse, Pointer
+from opcodes import ClearOpcode
+from parser import Pointer
+from parser8 import Parser8
+from preprocessor import Preprocessor
+
+
+def parse(data: str) -> List[Union[Pointer, ClearOpcode]]:
+    dat1 = Lexer()
+    dat1.lexer.input(data)
+    dat = Preprocessor(dat1)
+    dat2 = []
+    while not dat.is_ended():
+        dat2 += Parser8().parse(data, lexer=dat)
+
+    return dat2
 
 
 def compile_code(text: str) -> bytes:
