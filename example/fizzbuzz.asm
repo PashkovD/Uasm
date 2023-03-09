@@ -1,20 +1,24 @@
 
+include "uasm8.asm"
+
+
+
+
     mov sp, stack
     jmp start
 
-
-.print_num
+print_num:
     push ax
     push bx
 
     mov bx, ax
     shl bx, 4
     shr bx, 4
-    mov bx, [table:bx]
+    mov bx, [bx:table]
     mov [cx:num+1], bx
 
     shr ax, 4
-    mov bx, [table:ax]
+    mov bx, [ax:table]
     mov [cx:num], bx
 
     mov ax, num
@@ -23,43 +27,41 @@
     pop bx
     pop ax
     ret
-  .num
-    times 2, "0"
-    data 0
-  .table
-    data "0123456789ABCDEF"
+  num:
+    db "00", 0
+  table:
+    db "0123456789ABCDEF"
 
-
-.print_fizz
+print_fizz:
     push ax
     mov ax, fizz
     mov [cx:255],ax
     pop ax
     ret
-  .fizz
-    data "FIZZ", 0
+  fizz:
+    db "FIZZ", 0
 
 
-.print_buzz
+print_buzz:
     push ax
     mov ax, buzz
     mov [cx:255],ax
     pop ax
     ret
-  .buzz
-    data "BUZZ", 0
+  buzz:
+    db "BUZZ", 0
 
 
-.print_fizzbuzz
+print_fizzbuzz:
     push ax
     mov ax, fizzbuzz
     mov [cx:255],ax
     pop ax
     ret
-  .fizzbuzz
-    data "FIZZBUZZ", 0
+  fizzbuzz:
+    db "FIZZBUZZ", 0
 
-.start
+start:
     inc ax
     call print_num
     inc ax
@@ -92,4 +94,4 @@
     call print_fizzbuzz
     jmp start
 
-.stack
+stack:
