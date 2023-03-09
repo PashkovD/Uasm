@@ -1,15 +1,17 @@
 
-.start
+include "uasm8.asm"
+
+start:
     mov ax, code
-  .read_loop
-    data 253, 8
+  read_loop:
+    db 253, 8
     mov [ax], bx
     inc ax
     cmp bx, 0
     jne read_loop
 
     mov bx, code
-  .main_loop
+  main_loop:
     mov cx, [bx]
     inc bx
     cmp cx, '+'
@@ -25,44 +27,44 @@
     cmp cx, ']'
     je rbr
     cmp cx, '>'
-    je right
+    je rightt
     cmp cx, '<'
-    je left
+    je leftt
 
-    data 255
+    db 255
 
-  .plus
+  plus:
     mov dx, [ax]
     inc dx
     mov [ax], dx
     jmp main_loop
-  .minus
+  minus:
     mov dx, [ax]
     dec dx
     mov [ax], dx
     jmp main_loop
 
-  .right
+  rightt:
     inc ax
     jmp main_loop
-  .left
+  leftt:
     dec ax
     jmp main_loop
 
-  .i_out
-    data 254, 64
+  i_out:
+    db 254, 64
     jmp main_loop
 
-  .i_in
-    data 253, 64
+  i_in:
+    db 253, 64
     jmp main_loop
 
-  .lbr
+  lbr:
     mov cx, [ax]
     cmp cx, 0
     jne main_loop
     mov dx, 0
-      .lloop
+      lloop:
         mov cx, [bx]
         inc bx
         cmp cx, '['
@@ -71,20 +73,20 @@
         je ldec
         jmp lloop
 
-        .linc
+        linc:
           inc dx
           jmp lloop
 
-        .ldec
+        ldec:
           cmp dx, 0
           je main_loop
           dec dx
           jmp lloop
 
-  .rbr
+  rbr:
     mov dx, 0
     dec bx
-    .rloop
+    rloop:
         mov cx, [bx:-1]
         dec bx
         cmp cx, ']'
@@ -93,17 +95,15 @@
         je rdec
         jmp rloop
 
-        .rinc
+        rinc:
           inc dx
           jmp rloop
 
-        .rdec
+        rdec:
           cmp dx, 0
           je main_loop
           dec dx
           jmp rloop
 
 
-
-
-.code
+code:
